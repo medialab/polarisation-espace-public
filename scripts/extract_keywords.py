@@ -35,7 +35,10 @@ with open(INPUT_FILE, 'r') as f:
             netloc.endswith('.free.fr')
         ):
             host = netloc
-        elif 'vice.com' in netloc:
+        elif (
+            'vice.com' in netloc or
+            'afp.com' in netloc
+        ):
             host = netloc + parsed.path
         else:
             span = 3 if any(host in netloc for host in PROBLEMATIC_HOSTS) else 2

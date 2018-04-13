@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 INPUT_FILE = './data/sources_mediacloud.csv'
 DEBUG = False
 
+# NOTE: blogs.mediapart is problematic... being in both inclusion/exclusion
 PROBLEMATIC_HOSTS = frozenset([
     'blogs.',
     'blogspot',

@@ -1,3 +1,8 @@
+# Folders
+__pycache__
+
+# Files
 .DS_Store
 *.csv
-*.txt
+*.gz
+*.pyx

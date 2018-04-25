@@ -1,8 +1,10 @@
 # Folders
 __pycache__
+data
 
 # Files
 .DS_Store
 *.csv
 *.gz
 *.pyx
+config.py

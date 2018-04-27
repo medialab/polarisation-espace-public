@@ -7,4 +7,5 @@ data
 *.csv
 *.gz
 *.pyx
+*.gexf
 config.py

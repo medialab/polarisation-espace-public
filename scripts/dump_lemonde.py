@@ -31,8 +31,8 @@ with open(OUTPUT, 'w') as f:
     while True:
         result = client.storyList(solr_filter='media_id:%i' % LEMONDE_ID, text=1, last_processed_stories_id=last)
 
-        nb_batches += 1
         bar.update(nb_batches)
+        nb_batches += 1
 
         if len(result) == 0:
             break

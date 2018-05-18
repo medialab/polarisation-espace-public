@@ -10,28 +10,34 @@ import os
 import csv
 import sys
 import mediacloud
-from progressbar import ProgressBar
+from datetime import date
 
 sys.path.append(os.path.join(os.getcwd()))
 from config import MEDIACLOUD_API_KEY
 
-LEMONDE_ID = 39072
-OUTPUT = './data/lemonde.csv'
-
 client = mediacloud.api.AdminMediaCloud(MEDIACLOUD_API_KEY)
 
+LEMONDE_ID = 39072
+ROWS = 20
+OUTPUT = './data/lemonde.csv'
+DATE = client.publish_date_query(date(2018, 4, 1), date.today())
+SOLR_FILTER = [DATE, 'media_id:%i' % LEMONDE_ID]
+
+estimation_result = client.storyCount(solr_filter=SOLR_FILTER)
+
+print(estimation_result)
+print('Estimating %i stories to fetch.' % estimation_result['count'])
+sys.exit(0)
 nb_batches = 0
 last = 0
 with open(OUTPUT, 'w') as f:
     writer = csv.DictWriter(f, fieldnames=['id', 'url', 'title', 'text', 'date', 'rss'])
     writer.writeheader()
 
-    bar = ProgressBar()
-
     while True:
-        result = client.storyList(solr_filter='media_id:%i' % LEMONDE_ID, text=1, last_processed_stories_id=last)
+        result = client.storyList(solr_filter=SOLR_FILTER, rows=ROWS,
+                                  text=1, last_processed_stories_id=last)
 
-        bar.update(nb_batches)
         nb_batches += 1
 
         if len(result) == 0:
@@ -47,6 +53,6 @@ with open(OUTPUT, 'w') as f:
                 'rss': '1' if story['full_text_rss'] else '0'
             })
 
+        print('Processed %i stories.' % (ROWS * nb_batches))
         last = result[-1]['stories_id']
-
-bar.finalize()
+        print(last)

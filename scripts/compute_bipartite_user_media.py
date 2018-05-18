@@ -24,8 +24,8 @@ from lib.lru_trie import LRUTrie
 MEDIA_FILE = './data/sources.csv'
 TWEETS_FILE = './data/180426_polarisation_users_links.csv'
 OUTPUT_FILE = './bipartite-user-media.csv'
-SIMILARITY_THRESHOLD = 0.05
-MAX_USERS = 100_000
+SIMILARITY_THRESHOLD = 0.03
+MAX_USERS = None
 LIMIT = None
 
 print('Indexing medias...')
@@ -47,8 +47,8 @@ TWEETS_COUNTER = Counter()
 MEDIAS = list()
 with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
     reader = csv.DictReader(tf)
-    # writer = csv.DictWriter(of, fieldnames=['user', 'media'])
-    # writer.writeheader()
+    writer = csv.DictWriter(of, fieldnames=['user', 'media'])
+    writer.writeheader()
 
     bar = ProgressBar()
     count = itertools.count()
@@ -80,14 +80,16 @@ with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
                     MEDIAS.append(media)
                     bipartite.add_node(media, type='media')
 
-                bipartite.add_edge(user_key, media, weight=0)
+                if not bipartite.has_edge(user_key, media):
+                    bipartite.add_edge(user_key, media, weight=0)
+
                 bipartite[user_key][media]['weight'] += 1
 
-            # if media:
-            #     writer.writerow({
-            #         'user': user,
-            #         'media': media
-            #     })
+            if media:
+                writer.writerow({
+                    'user': user,
+                    'media': media
+                })
 
 print('Found %i unique users.' % NB_USERS)
 print('Found %i unique medias.' % len(MEDIAS))
@@ -119,6 +121,8 @@ for media in bar(iter(MEDIAS)):
         user_vector[user] = weight
 
     USER_VECTORS[media] = user_vector
+
+# TODO: speed computations by using integer keys when computing
 
 print('Computing monopartite graph...')
 bar = ProgressBar(max_value=len(MEDIAS))

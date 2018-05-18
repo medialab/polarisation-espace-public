@@ -23,7 +23,7 @@ OUTPUT = './data/lemonde.csv'
 DATE = client.publish_date_query(date(2018, 4, 1), date.today())
 SOLR_FILTER = [DATE, 'media_id:%i' % LEMONDE_ID]
 
-estimation_result = client.storyCount(solr_filter=SOLR_FILTER)
+estimation_result = client.storyCount(solr_filter=SOLR_FILTER[1])
 
 print(estimation_result)
 print('Estimating %i stories to fetch.' % estimation_result['count'])

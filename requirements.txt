@@ -1,5 +1,5 @@
-fog
-mediacloud
-networkx
-progressbar2
-ural
+fog==0.0.2
+mediacloud==3.0.3
+networkx==2.1
+progressbar2==3.37.1
+ural==0.0.1

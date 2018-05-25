@@ -22,7 +22,7 @@ LEMONDE_ID = 39072
 ROWS = 20
 OUTPUT = './data/lemonde.csv'
 FILTER = 'media_id:%i' % LEMONDE_ID
-DATE = client.publish_date_query(date(2018, 5, 1), date.today())
+DATE = client.publish_date_query(date(2018, 4, 1), date.today())
 
 estimation_result = client.storyCount(FILTER, solr_filter=DATE)
 

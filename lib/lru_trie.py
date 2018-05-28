@@ -5,6 +5,7 @@
 # Temporary class based on Datapol's code. This will be moved in a full-fledged
 # library in the future.
 #
+import csv
 from urllib.parse import urlparse
 
 # Notes:
@@ -108,3 +109,15 @@ class LRUTrie(object):
             return
 
         return last_leaf
+
+    @staticmethod
+    def from_csv(filename):
+        trie = LRUTrie()
+
+        with open(filename, 'r') as f:
+            reader = csv.DictReader(f)
+
+            for line in reader:
+                trie.set(line['url'], line['name'])
+
+        return trie

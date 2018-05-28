@@ -22,23 +22,14 @@ from lib.lru_trie import LRUTrie
 
 # Parameters
 MEDIA_FILE = './data/sources.csv'
-TWEETS_FILE = './data/180426_polarisation_users_links.csv'
-OUTPUT_FILE = './bipartite-user-media.csv'
+TWEETS_FILE = './data/180528_polarisation_users_links_isrt.csv'
+OUTPUT_FILE = './data/bipartite-user-media.csv'
 SIMILARITY_THRESHOLD = 0.03
 MAX_USERS = None
 LIMIT = None
 
 print('Indexing medias...')
-
-MEDIAS_TRIE = LRUTrie()
-
-with open(MEDIA_FILE, 'r') as f:
-    reader = csv.DictReader(f)
-
-    for line in reader:
-
-        # NOTE: currently, media names are unique
-        MEDIAS_TRIE.set(line['url'], line['name'])
+MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE)
 
 print('Streaming tweets...')
 
@@ -152,4 +143,4 @@ for media in bar(iter(MEDIAS)):
             monopartite.add_edge(media, other_media, weight=similarity)
 
 print('Resulting monopartite graph has %i nodes and %i edges.' % (monopartite.order(), monopartite.size()))
-nx.write_gexf(monopartite, 'bipartite-user-media.gexf')
+nx.write_gexf(monopartite, './data/bipartite-user-media.gexf')

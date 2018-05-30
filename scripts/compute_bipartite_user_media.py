@@ -10,10 +10,11 @@
 import os
 import sys
 import csv
+import math
 import itertools
 import networkx as nx
 from collections import Counter, defaultdict
-from fog.metrics import sparse_cosine_similarity, weighted_jaccard_similarity
+from fog.metrics import sparse_dotproduct, weighted_jaccard_similarity
 from progressbar import ProgressBar
 
 # Importing own lib
@@ -72,6 +73,14 @@ MEDIAS = MEDIAS_TRIE.values
 print('Found %i unique users.' % len(USER_IDS))
 print('Found %i unique medias.' % len(MEDIAS))
 
+print('Computing media norms...')
+
+MEDIA_NORMS = {}
+
+for media in MEDIAS:
+    users = USER_VECTORS[media]
+    MEDIA_NORMS[media] = math.sqrt(sum(map(lambda x: x * x, users.values())))
+
 monopartite_cosine = nx.Graph()
 monopartite_jaccard = nx.Graph()
 
@@ -80,12 +89,20 @@ bar = ProgressBar(max_value=len(MEDIAS))
 for i in bar(range(len(MEDIAS))):
     media1 = MEDIAS[i]
     vector1 = USER_VECTORS[media1]
+    norm1 = MEDIA_NORMS[media1]
 
     for j in range(i + 1, len(MEDIAS)):
         media2 = MEDIAS[j]
         vector2 = USER_VECTORS[media2]
+        norm2 = MEDIA_NORMS[media2]
 
-        cosine = sparse_cosine_similarity(vector1, vector2)
+        # TODO: make option to pass norm to sparse_cosine_similarity
+        dotproduct = sparse_dotproduct(vector1, vector2)
+        cosine = 0.0
+
+        if norm1 != 0 and norm2 != 0:
+            cosine = dotproduct / (norm1 * norm2)
+
         jaccard = weighted_jaccard_similarity(vector1, vector2)
 
         if cosine >= SIMILARITY_THRESHOLD:

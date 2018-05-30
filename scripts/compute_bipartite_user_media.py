@@ -25,6 +25,8 @@ MEDIA_FILE = './data/sources.csv'
 TWEETS_FILE = './data/180528_polarisation_users_links_isrt.csv'
 OUTPUT_FILE = './data/bipartite-user-media.csv'
 SIMILARITY_THRESHOLD = 0.03
+
+# TODO: Clean MAX_USERS
 MAX_USERS = None
 LIMIT = None
 

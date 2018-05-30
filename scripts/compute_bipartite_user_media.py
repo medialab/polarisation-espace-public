@@ -12,8 +12,8 @@ import sys
 import csv
 import itertools
 import networkx as nx
-from collections import Counter
-from fog.metrics import sparse_cosine_similarity
+from collections import Counter, defaultdict
+from fog.metrics import sparse_cosine_similarity, weighted_jaccard_similarity
 from progressbar import ProgressBar
 
 # Importing own lib
@@ -25,9 +25,6 @@ MEDIA_FILE = './data/sources.csv'
 TWEETS_FILE = './data/180528_polarisation_users_links_isrt.csv'
 OUTPUT_FILE = './data/bipartite-user-media.csv'
 SIMILARITY_THRESHOLD = 0.03
-
-# TODO: Clean MAX_USERS
-MAX_USERS = None
 LIMIT = None
 
 print('Indexing medias...')
@@ -36,8 +33,10 @@ MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE)
 print('Streaming tweets...')
 
 NB_USERS = 0
-TWEETS_COUNTER = Counter()
-MEDIAS = list()
+user_id_count = itertools.count()
+USER_IDS = defaultdict(lambda: next(user_id_count))
+USER_VECTORS = defaultdict(Counter)
+
 with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
     reader = csv.DictReader(tf)
     writer = csv.DictWriter(of, fieldnames=['user', 'media'])
@@ -45,7 +44,6 @@ with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
 
     bar = ProgressBar()
     count = itertools.count()
-    bipartite = nx.Graph()
 
     for line in bar(reader):
 
@@ -54,95 +52,50 @@ with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
             break
 
         user = line['user_screenname']
+        user_id = USER_IDS[user]
         links = line['links'].split('|')
 
         for link in links:
             media = MEDIAS_TRIE.longest(link)
 
             if media:
-                user_key = '$&@%s@&$' % user
 
-                if user_key not in bipartite:
-                    NB_USERS += 1
-                    bipartite.add_node(user_key, type='user')
+                USER_VECTORS[media][user_id] += 1
 
-                if MAX_USERS is not None:
-                    TWEETS_COUNTER[user_key] += 1
-
-                if media not in bipartite:
-                    MEDIAS.append(media)
-                    bipartite.add_node(media, type='media')
-
-                if not bipartite.has_edge(user_key, media):
-                    bipartite.add_edge(user_key, media, weight=0)
-
-                bipartite[user_key][media]['weight'] += 1
-
-            if media:
                 writer.writerow({
                     'user': user,
                     'media': media
                 })
 
-print('Found %i unique users.' % NB_USERS)
+MEDIAS = MEDIAS_TRIE.values
+
+print('Found %i unique users.' % len(USER_IDS))
 print('Found %i unique medias.' % len(MEDIAS))
 
-if MAX_USERS is not None:
-    print('Trimming users to keep only top %i...' % MAX_USERS)
-
-    top_users = set(t[0] for t in TWEETS_COUNTER.most_common(MAX_USERS))
-    # TODO: print top 10
-    for node, t in list(bipartite.nodes(data='type')):
-        if t != 'user':
-            continue
-
-        if node not in top_users:
-            bipartite.remove_node(node)
-
-monopartite = nx.Graph()
-monopartite.add_nodes_from(MEDIAS)
-
-USER_VECTORS = {}
-
-print('Pre-computing sparse user vectors...')
-bar = ProgressBar(max_value=len(MEDIAS))
-for media in bar(iter(MEDIAS)):
-    user_vector = {}
-
-    for user in bipartite.neighbors(media):
-        weight = bipartite[media][user]['weight']
-        user_vector[user] = weight
-
-    USER_VECTORS[media] = user_vector
-
-# TODO: speed computations by using integer keys when computing
+monopartite_cosine = nx.Graph()
+monopartite_jaccard = nx.Graph()
 
 print('Computing monopartite graph...')
 bar = ProgressBar(max_value=len(MEDIAS))
-for media in bar(iter(MEDIAS)):
-    user_vector = USER_VECTORS[media]
+for i in bar(range(len(MEDIAS))):
+    media1 = MEDIAS[i]
+    vector1 = USER_VECTORS[media1]
 
-    other_medias = set()
+    for j in range(i + 1, len(MEDIAS)):
+        media2 = MEDIAS[j]
+        vector2 = USER_VECTORS[media2]
 
-    for user in bipartite.neighbors(media):
-        for other_media in bipartite.neighbors(user):
+        cosine = sparse_cosine_similarity(vector1, vector2)
+        jaccard = weighted_jaccard_similarity(vector1, vector2)
 
-            # We can skip computation half of the time
-            if other_media >= media:
-                continue
+        if cosine >= SIMILARITY_THRESHOLD:
+            monopartite_cosine.add_edge(media1, media2, weight=cosine)
 
-            other_medias.add(other_media)
+        if jaccard >= SIMILARITY_THRESHOLD:
+            monopartite_jaccard.add_edge(media1, media2, weight=jaccard)
 
-    for other_media in other_medias:
-        other_user_vector = USER_VECTORS[other_media]
+print('Resulting cosine monopartite graph has %i nodes and %i edges.' % (monopartite_cosine.order(), monopartite_cosine.size()))
+nx.write_gexf(monopartite_cosine, './data/bipartite-user-media-cosine.gexf')
 
-        if len(user_vector) == 0 or len(other_user_vector) == 0:
-            similarity = 0.0
-        else:
-            similarity = sparse_cosine_similarity(user_vector, other_user_vector)
-
-        if similarity >= SIMILARITY_THRESHOLD:
-            monopartite.add_edge(media, other_media, weight=similarity)
-
-print('Resulting monopartite graph has %i nodes and %i edges.' % (monopartite.order(), monopartite.size()))
-nx.write_gexf(monopartite, './data/bipartite-user-media.gexf')
+print('Resulting jaccard monopartite graph has %i nodes and %i edges.' % (monopartite_jaccard.order(), monopartite_jaccard.size()))
+nx.write_gexf(monopartite_jaccard, './data/bipartite-user-media-jaccard.gexf')

@@ -1,4 +1,4 @@
-fog==0.0.2
+fog==0.1.1
 mediacloud==3.0.3
 networkx==2.1
 progressbar2==3.37.1

@@ -61,6 +61,7 @@ class LRUTrie(object):
     def __init__(self):
         self.root = {}
         self.leaf = 1
+        self.values = []
 
     def set(self, url, value):
         lru = url_to_lru(url)
@@ -88,6 +89,8 @@ class LRUTrie(object):
                 node = node[stem]
 
             node[self.leaf] = value
+
+        self.values.append(value)
 
     def longest(self, url):
         lru = url_to_lru(url) + [None]

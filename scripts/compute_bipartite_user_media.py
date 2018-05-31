@@ -38,6 +38,11 @@ user_id_count = itertools.count()
 USER_IDS = defaultdict(lambda: next(user_id_count))
 USER_VECTORS = defaultdict(Counter)
 
+# def pandas_reader(f):
+#     for chunk in pd.read_csv(f, chunksize=5000, engine='c', dtype=str):
+#         for row in chunk.itertuples():
+#             yield row
+
 with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
     reader = csv.DictReader(tf)
     writer = csv.DictWriter(of, fieldnames=['user', 'media'])

@@ -17,6 +17,8 @@ from collections import Counter, defaultdict
 from fog.metrics import sparse_dotproduct, weighted_jaccard_similarity
 from progressbar import ProgressBar
 
+# NOTE: possible to speed up through scipy
+
 # Importing own lib
 sys.path.append(os.path.join(os.getcwd()))
 from lib.lru_trie import LRUTrie

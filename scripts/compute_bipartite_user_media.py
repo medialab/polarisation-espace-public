@@ -16,6 +16,7 @@ import networkx as nx
 from collections import Counter, defaultdict
 from fog.metrics import sparse_dotproduct, weighted_jaccard_similarity
 from progressbar import ProgressBar
+from ural import normalize_url
 
 # NOTE: possible to speed up through scipy
 
@@ -31,7 +32,7 @@ SIMILARITY_THRESHOLD = 0.03
 LIMIT = None
 
 print('Indexing medias...')
-MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE)
+MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True)
 
 print('Streaming tweets...')
 
@@ -47,7 +48,7 @@ USER_VECTORS = defaultdict(Counter)
 
 with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
     reader = csv.DictReader(tf)
-    writer = csv.DictWriter(of, fieldnames=['user', 'media'])
+    writer = csv.DictWriter(of, fieldnames=['user', 'media', 'normalized_url'])
     writer.writeheader()
 
     bar = ProgressBar()
@@ -68,14 +69,15 @@ with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE, 'w') as of:
 
             if media:
 
-                USER_VECTORS[media][user_id] += 1
+                USER_VECTORS[media['name']][user_id] += 1
 
                 writer.writerow({
                     'user': user,
-                    'media': media
+                    'media': media['webentity'],
+                    'normalized_url': normalize_url(link)
                 })
 
-MEDIAS = MEDIAS_TRIE.values
+MEDIAS = [media['name'] for media in MEDIAS_TRIE.values]
 
 print('Found %i unique users.' % len(USER_IDS))
 print('Found %i unique medias.' % len(MEDIAS))

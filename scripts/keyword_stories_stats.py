@@ -24,12 +24,12 @@ FRANCE_NATIONAL_COLLECTION = 34412146
 DEFAULT_DATE = [date(2018, 4, 1), date.today()]
 
 STORIES = {
-    'tobliac_blesse': {
+    'tolbiac_blesse': {
         'query': 'Tolbiac AND (mort OR bless* OR deced*)',
         'date': [date(2018, 4, 1), date(2018, 4, 30)]
     },
     'tolbiac_prostitution': {
-        'query': 'Tolbiac AND (sexe OR prositu* OR drogu*)',
+        'query': 'Tolbiac AND (sexe OR prostitu* OR drogu*)',
         'date': [date(2018, 4, 15), date.today()]
     },
     'mamoudou_gassama': {
@@ -44,7 +44,7 @@ STORIES = {
         'query': 'Aquarius',
         'date': [date(2018, 6, 8), date.today()]
     },
-    'dimitri_payer': {
+    'dimitri_payet': {
         'query': '"Dimitri Payet"',
         'date': [date(2018, 5, 11), date(2018, 5, 20)]
     },

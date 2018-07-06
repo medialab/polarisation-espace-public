@@ -59,6 +59,58 @@ STORIES = {
     'beltrame': {
         'query': 'Beltrame',
         'date': [date(2018, 3, 24), date(2018, 5, 1)]
+    },
+    'macron_aides_sociales': {
+        'query': 'Macron AND pognon AND dingue',
+        'date': [date(2018, 6, 10), date.today()]
+    },
+    'virginie_calmels': {
+        'query': '"Virginie Calmels"',
+        'date': [date(2018, 6, 1), date.today()]
+    },
+    'anticor': {
+        'query': 'Anticor',
+        'date': [date(2018, 6, 1), date.today()]
+    },
+    'salvini': {
+        'query': '"Mateo Salvini" AND aquarius',
+        'date': [date(2018, 6, 8), date.today()]
+    },
+    'rabiot': {
+        'query': '"Adrien Rabiot"',
+        'date': [date(2018, 5, 11), date(2018, 5, 21)]
+    },
+    'parcoursup': {
+        'query': 'parcoursup',
+        'date': [date(2018, 4, 1), date.today()]
+    },
+    'blanquefort': {
+        'query': 'Ford AND Blanquefort',
+        'date': [date(2018, 4, 1), date.today()]
+    },
+    'whirlpool': {
+        'query': 'Whirlpool AND Amiens',
+        'date': [date(2018, 4, 1), date.today()]
+    },
+    'maduro': {
+        'query': 'Maduro AND élection',
+        'date': [date(2018, 4, 1), date.today()]
+    },
+    'attentat_opera': {
+        'query': 'attentat AND opéra',
+        'date': [date(2018, 5, 11), date(2018, 6, 7)]
+    },
+    'attentat_egyptien': {
+        'query': 'Collomb AND égyptien',
+        'date': [date(2018, 4, 1), date.today()]
+    },
+    'macron_vatican': {
+        'query': 'Macron AND ("Saint Siège" OR Vatican)',
+        'date': [date(2018, 6, 15), date(2018, 7, 5)]
+    },
+    'macron_migrants': {
+        'query': 'Macron AND (centre OR centres) AND (migrant OR migrants OR migrations)',
+        'date': [date(2018, 6, 9), date(2018, 7, 5)]
     }
 }
 

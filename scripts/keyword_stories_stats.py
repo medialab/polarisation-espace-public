@@ -111,6 +111,10 @@ STORIES = {
     'macron_migrants': {
         'query': 'Macron AND (centre OR centres) AND (migrant OR migrants OR migrations)',
         'date': [date(2018, 6, 9), date(2018, 7, 5)]
+    },
+    'benalla': {
+        'query': 'Benalla',
+        'date': [date(2018, 7, 15), date.today()]
     }
 }
 

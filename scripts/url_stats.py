@@ -11,7 +11,7 @@ from progressbar import ProgressBar
 from ural import normalize_url
 from collections import Counter, defaultdict
 
-SHARES = './data/180528_polarisation_users_links_isrt.csv'
+SHARES = './data/180918_polarisation_users_links_isrt.csv'
 MEDIA_FILE = './data/sources.csv'
 OUTPUT = './data/deduped_shared_urls.csv'
 MEDIA_OUTPUT = './data/shared_medias.csv'

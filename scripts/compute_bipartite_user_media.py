@@ -26,7 +26,7 @@ from lib.lru_trie import LRUTrie
 
 # Parameters
 MEDIA_FILE = './data/sources.csv'
-TWEETS_FILE = './data/180528_polarisation_users_links_isrt.csv'
+TWEETS_FILE = './data/180918_polarisation_users_links_isrt.csv'
 OUTPUT_FILE = './data/bipartite-user-media.csv'
 SIMILARITY_THRESHOLD = 0.03
 LIMIT = None

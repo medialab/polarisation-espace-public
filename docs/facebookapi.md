@@ -1,4 +1,4 @@
-# Using the Facebook Graph API
+# Using Facebook's Graph API
 
 #### Example purpose: Fetching the number of reactions, shares and comments of specific URLs
 For this case, one use the [URL section](https://developers.facebook.com/docs/graph-api/reference/v3.2/url "Graph API - URL") of Facebook's Graph API.
@@ -30,7 +30,8 @@ Result:
 ## :no_entry_sign: Restrictions
 
 On their [page about rate limiting](https://developers.facebook.com/docs/graph-api/advanced/rate-limiting/ "Graph API - Rate limiting"), Facebook explains that the number of calls per hour is set to *200 times the number of users*. 
-If you are the only user of your application, it means one call every 18s.
+If you are the only user of your application, it means *one call every 18s*.
+
 Our tests showed that this rate can be pushed to **one call every 15 seconds**.
 Still may take long if you have 10k urls to process (3,5 days :sleeping:), even more if you have 2M (1,9 years :skull:).
 

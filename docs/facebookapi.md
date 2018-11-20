@@ -11,7 +11,8 @@ Once you have the **URL** to analyze and the **FIELDS** you want ("*engagement*"
 
 <pre>https://graph.facebook.com/v3.1/?id=<b>URL</b>&fields=<b>FIELDS</b>&access_token=<b>ACCESSTOKEN</b></pre>
 
-Example request: 
+Example request:
+
 ```https://graph.facebook.com/v3.1/?id=http%3A%2F%2Flemonde.fr&fields=engagement&access_token=APPID|APPSECRET```
 
 Result: 
@@ -35,14 +36,14 @@ If you are the only user of your application, it means *one call every 18s*.
 Our tests showed that this rate can be pushed to **one call every 15 seconds**.
 Still may take long if you have 10k urls to process (3,5 days :sleeping:), even more if you have 2M (1,9 years :skull:).
 
-:warning: Keep in mind that every field counts as one call. If your request features 3 fields, with for example `&fields=engagement,app_links,og_object`, it counts as 3 calls.
+:warning: Keep in mind that every field counts as one call. 
+If your request features 3 fields, with for example `&fields=engagement,app_links,og_object`, it counts as 3 calls.
 
 
 ## :information_source: Not to forget
 
 * **Call the API with both the HTTP AND the HTTPS versions of the URL** you want to analyze, in order to have the whole number of reactions concerning this URL. *Beware, some urls return the exact same number of reactions for the HTTP and for the HTTPS versions. Be sure to check this before making a total of reactions, in order to avoid a fake (doubled) total.*
 
-* You have to **encode the URL** to analyze before putting it in the graph url.
-Can be done with `encodeURI()` in JS for example.
+* You have to **encode the URL** to analyze before putting it in the graph url. It can be done with `encodeURI()` in JS for example.
 
 * **Be sure to have a strictly valid URL**. You can clean your URLs and remove the irrelevant parts, but do not mess with the final `/` if there is one for example. Your browser can add or remove it automatically to find the right page, but the API won't. 

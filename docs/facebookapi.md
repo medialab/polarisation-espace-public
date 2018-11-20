@@ -11,6 +11,8 @@ Once you have the **URL** to analyze and the **FIELDS** you want ("*engagement*"
 
 <pre>https://graph.facebook.com/v3.1/?id=<b>URL</b>&fields=<b>FIELDS</b>&access_token=<b>ACCESSTOKEN</b></pre>
 
+---
+
 Example request:
 
 ```https://graph.facebook.com/v3.1/?id=http%3A%2F%2Flemonde.fr&fields=engagement&access_token=APPID|APPSECRET```

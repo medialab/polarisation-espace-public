@@ -35,6 +35,12 @@ client = mediacloud.api.MediaCloud(MEDIACLOUD_API_KEY)
 trie = LRUTrie.from_csv(MEDIA_FILE, detailed=True)
 
 DEDUPED_URLS = {}
+MEDIAS = {}
+
+for media in trie.values:
+    if not media['mediacloud_id']:
+        continue
+    MEDIAS[int(media['mediacloud_id'])] = media
 
 # Indexing urls
 with open(SHARED_URLS_FILE, 'r') as f:
@@ -50,7 +56,7 @@ bar.finish()
 
 # Retrieving mediacloud urls
 with open(OUTPUT, 'w') as f:
-    writer = csv.DictWriter(f, fieldnames=['query', 'id', 'date', 'url', 'normalized', 'title', 'media', 'shares'])
+    writer = csv.DictWriter(f, fieldnames=['query', 'id', 'date', 'url', 'normalized', 'title', 'media', 'mediacloud_id', 'shares'])
     writer.writeheader()
 
     for query in QUERIES:
@@ -71,7 +77,7 @@ with open(OUTPUT, 'w') as f:
                 break
 
             for story in result:
-                media = trie.longest(story['url'])
+                media = MEDIAS.get(story['media_id'])
                 normalized_url = normalize_url(story['url'])
 
                 writer.writerow({
@@ -82,6 +88,7 @@ with open(OUTPUT, 'w') as f:
                     'title': story['title'],
                     'date': story['publish_date'],
                     'media': media['name'] if media else '',
+                    'mediacloud_id': story['media_id'],
                     'shares': DEDUPED_URLS[normalized_url] if normalized_url in DEDUPED_URLS else ''
                 })
 

@@ -21,28 +21,30 @@ OUTPUT_FILE = './data/keyword-stories.csv'
 FRANCE_LOCAL_COLLECTION = 38379799
 FRANCE_NATIONAL_COLLECTION = 34412146
 
-DEFAULT_DATE = [date(2018, 4, 1), date.today()]
+START_DATE = date(2018, 4, 1)
+TODAY = date.today()
+DEFAULT_DATE = [START_DATE, TODAY]
 
 STORIES = {
     'tolbiac_blesse': {
         'query': 'Tolbiac AND (mort OR bless* OR deced*)',
-        'date': [date(2018, 4, 1), date(2018, 4, 30)]
+        'date': [START_DATE, date(2018, 4, 30)]
     },
     'tolbiac_prostitution': {
         'query': 'Tolbiac AND (sexe OR prostitu* OR drogu*)',
-        'date': [date(2018, 4, 15), date.today()]
+        'date': [date(2018, 4, 15), TODAY]
     },
     'mamoudou_gassama': {
         'query': 'Mamoudou OR Gassama',
-        'date': [date(2018, 5, 26), date.today()]
+        'date': [date(2018, 5, 26), TODAY]
     },
     'pma_gpa': {
         'query': 'PMA OR GPA',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'aquarius': {
         'query': 'Aquarius',
-        'date': [date(2018, 6, 8), date.today()]
+        'date': [date(2018, 6, 8), TODAY]
     },
     'dimitri_payet': {
         'query': '"Dimitri Payet"',
@@ -54,7 +56,7 @@ STORIES = {
     },
     'soros': {
         'query': 'Soros',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'beltrame': {
         'query': 'Beltrame',
@@ -62,19 +64,19 @@ STORIES = {
     },
     'macron_aides_sociales': {
         'query': 'Macron AND pognon AND dingue',
-        'date': [date(2018, 6, 10), date.today()]
+        'date': [date(2018, 6, 10), TODAY]
     },
     'virginie_calmels': {
         'query': '"Virginie Calmels"',
-        'date': [date(2018, 6, 1), date.today()]
+        'date': [date(2018, 6, 1), TODAY]
     },
     'anticor': {
         'query': 'Anticor',
-        'date': [date(2018, 6, 1), date.today()]
+        'date': [date(2018, 6, 1), TODAY]
     },
     'salvini': {
         'query': '"Mateo Salvini" AND aquarius',
-        'date': [date(2018, 6, 8), date.today()]
+        'date': [date(2018, 6, 8), TODAY]
     },
     'rabiot': {
         'query': '"Adrien Rabiot"',
@@ -82,19 +84,19 @@ STORIES = {
     },
     'parcoursup': {
         'query': 'parcoursup',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'blanquefort': {
         'query': 'Ford AND Blanquefort',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'whirlpool': {
         'query': 'Whirlpool AND Amiens',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'maduro': {
         'query': 'Maduro AND élection',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'attentat_opera': {
         'query': 'attentat AND opéra',
@@ -102,7 +104,7 @@ STORIES = {
     },
     'attentat_egyptien': {
         'query': 'Collomb AND égyptien',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'macron_vatican': {
         'query': 'Macron AND ("Saint Siège" OR Vatican)',
@@ -114,7 +116,7 @@ STORIES = {
     },
     'benalla': {
         'query': 'Benalla',
-        'date': [date(2018, 7, 15), date.today()]
+        'date': [date(2018, 7, 15), TODAY]
     }
 }
 

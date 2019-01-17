@@ -120,6 +120,57 @@ STORIES = {
     }
 }
 
+ANSES_STORIES = {
+    'gilets_jaunes': {
+        'query': '"gilet* jaune*"'
+    },
+    'tiques': {
+        'query': '(risque* AND (sant* OR sanit*)) AND tiques'
+    },
+    'nutriscore': {
+        'query': '(risque* AND (sant* OR sanit*)) AND nutriscore'
+    },
+    'xylella': {
+        'query': '(risque* AND (sant* OR sanit*)) AND xylella'
+    },
+    'vetement': {
+        'query': '((risque*OR chimi*) AND (sant* OR sanit*)) AND (vêtement* OR vetemen* OR habit*)'
+    },
+    'terrain_synthetique': {
+        'query': '(risque* AND (sant* OR sanit*)) AND (("terrain* synthétique*") OR ("terrain* synthetique*"))'
+    },
+    'melatonine': {
+        'query': '(risque* AND (sant* OR sanit*)) AND (mélatonine OR melatonine)'
+    },
+    'maladie_professionnelle': {
+        'query': '(risque* AND exposition*  AND (evaluation* OR évaluation*)) AND ("maladie* professionnelle*")'
+    },
+    'consommation_viande': {
+        'query': '((risque* or cancer*) AND nutrition AND (sant* or sanit*)) AND ("consommation de viande")'
+    },
+    'pollution_air': {
+        'query': '(risque* AND (sant* OR sanit*)) AND "pollution de l\'air"'
+    },
+    'amande_abricot': {
+        'query': '((risque* OR cyanure) AND (sant* OR sanit*)) AND (amande AND abricot)'
+    },
+    'abeilles': {
+        'query': '(risque* AND mortalite*  AND (sant* OR sanit*) NOT piq*) AND abeilles'
+    },
+    'barquettes': {
+        'query': '((risque* AND contaminant*) AND (sant* OR sanit*)) AND barquettes'
+    },
+    'linky': {
+        'query': '(risque* AND (sant* OR sanit*)) AND linky'
+    },
+    'aloe_vera': {
+        'query': '((risque* AND feuille*) risque* AND (sant* OR sanit*)) AND ("aloe vera")'
+    }
+}
+
+for story in ANSES_STORIES.values():
+    story['date'] = DEFAULT_DATE
+
 client = mediacloud.api.AdminMediaCloud(MEDIACLOUD_API_KEY)
 trie = LRUTrie.from_csv(MEDIA_FILE, detailed=True)
 
@@ -157,7 +208,7 @@ with open(OUTPUT_FILE, 'w') as f:
             'count': c
         })
 
-        for story_name, story in STORIES.items():
+        for story_name, story in ANSES_STORIES.items():
             writer.writerow({
                 'id': media['id'],
                 'name': media['name'],

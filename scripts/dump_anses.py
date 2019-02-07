@@ -26,9 +26,7 @@ TAGS_ID_MEDIA = (38379799, 34412146)
 ROWS = 20
 
 QUERIES = [
-    'glyphosate',
-    'slime',
-    '(chlordécone OR chlordecone)'
+    '"gilet* jaune*"'
 ]
 
 client = mediacloud.api.MediaCloud(MEDIACLOUD_API_KEY)

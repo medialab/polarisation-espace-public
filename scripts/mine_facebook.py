@@ -53,10 +53,11 @@ def select_top_urls(source_csv, sample_size=100):
                     url = row['url']
                     twitter_shares = row['shares']
                     media = MEDIAS_TRIE.longest(url)
+                    print(media)
                     writer.writerow({'media': media, 'url': url,
                                     'shares': twitter_shares})
     except FileNotFoundError:
-        print("ERROR -", "there is no source file (source_urls.csv) in /data")
+        print("ERROR -", "there is no", source_csv,  "in /data")
         sys.exit()
 
 
@@ -398,41 +399,40 @@ def add_facebook_data(csv_file="most_shared_urls.csv", complete=False):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("source_csv", help="The csv containing the urls you want Facebook data on")
-    parser.add_argument("sample_type", help="Choose how you want to sample your csv of urls (choose 'whole' if you want to process all your source file)", choices=['top', 'random', 'whole'])
-    parser.add_argument("--sample_size", help="Sets the total amount of urls of the sample (if no per-media option), or the number of urls per media (if per-media option)", type=int)
-    parser.add_argument("--per-media", help="Sample the urls according to their media", action="store_true")
-    parser.add_argument(
-        "--complete", help="Fetch complete data - very slow", action="store_true")
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("source_csv", help="The csv containing the urls you want Facebook data on")
+    # parser.add_argument("sample_type", help="Choose how you want to sample your csv of urls (choose 'whole' if you want to process all your source file)", choices=['top', 'random', 'whole'])
+    # parser.add_argument("--sample_size", help="Sets the total amount of urls of the sample (if no per-media option), or the number of urls per media (if per-media option)", type=int)
+    # parser.add_argument("--per-media", help="Sample the urls according to their media", action="store_true")
+    # parser.add_argument(
+    #     "--complete", help="Fetch complete data - very slow", action="store_true")
+    # args = parser.parse_args()
 
-    if args.sample_type == 'top':
-        if args.per_media:
-            select_top_urls_per_media(args.source_csv, args.sample_size)
-            add_facebook_data(csv_file="top_urls_per_media.csv", complete=args.complete)
-        else:
-            select_top_urls(args.source_csv, args.sample_size)
-            add_facebook_data(csv_file="top_urls.csv", complete=args.complete)
-    elif args.sample_type == 'random':
-        if args.per_media:
-            select_random_urls_per_media(args.source_csv, args.sample_size)
-            add_facebook_data(
-                csv_file="urls_random_sample_per_media.csv", complete=args.complete)
-        else:
-            select_random_urls(args.source_csv, args.sample_size)
-            add_facebook_data(csv_file="urls_random_sample.csv",
-                              complete=args.complete)
+    # if args.sample_type == 'top':
+    #     if args.per_media:
+    #         select_top_urls_per_media(args.source_csv, args.sample_size)
+    #         add_facebook_data(csv_file="top_urls_per_media.csv", complete=args.complete)
+    #     else:
+    #         select_top_urls(args.source_csv, args.sample_size)
+    #         add_facebook_data(csv_file="top_urls.csv", complete=args.complete)
+    # elif args.sample_type == 'random':
+    #     if args.per_media:
+    #         select_random_urls_per_media(args.source_csv, args.sample_size)
+    #         add_facebook_data(
+    #             csv_file="urls_random_sample_per_media.csv", complete=args.complete)
+    #     else:
+    #         select_random_urls(args.source_csv, args.sample_size)
+    #         add_facebook_data(csv_file="urls_random_sample.csv",
+    #                           complete=args.complete)
 
-    elif args.sample_type == 'whole':
-        if args.per_media:
-            print("ERROR - 'whole' sample type and 'per-media' sample option are incompatible.")
-            sys.exit()
-        else:
-            add_facebook_data(args.source_csv, complete=args.complete)
+    # elif args.sample_type == 'whole':
+    #     if args.per_media:
+    #         print("ERROR - 'whole' sample type and 'per-media' sample option are incompatible.")
+    #         sys.exit()
+    #     else:
+    #         add_facebook_data(args.source_csv, complete=args.complete)
 
-
-    # select_top_urls(100000)
+    select_top_urls(os.path.join('sources.csv'), 200)
     # select_top_urls_per_media(20)
     # select_random_urls(10000)
     # select_random_urls_per_media()

@@ -31,6 +31,8 @@ def parse_query(q):
 
         m = m.replace('*', '[^\\b]+')
 
+        m = '\\b' + m + '\\b'
+
         patterns.append((original, re.compile(m)))
 
     return patterns

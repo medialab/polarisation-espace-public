@@ -21,28 +21,30 @@ OUTPUT_FILE = './data/keyword-stories.csv'
 FRANCE_LOCAL_COLLECTION = 38379799
 FRANCE_NATIONAL_COLLECTION = 34412146
 
-DEFAULT_DATE = [date(2018, 4, 1), date.today()]
+START_DATE = date(2018, 4, 1)
+TODAY = date.today()
+DEFAULT_DATE = [START_DATE, TODAY]
 
 STORIES = {
     'tolbiac_blesse': {
         'query': 'Tolbiac AND (mort OR bless* OR deced*)',
-        'date': [date(2018, 4, 1), date(2018, 4, 30)]
+        'date': [START_DATE, date(2018, 4, 30)]
     },
     'tolbiac_prostitution': {
         'query': 'Tolbiac AND (sexe OR prostitu* OR drogu*)',
-        'date': [date(2018, 4, 15), date.today()]
+        'date': [date(2018, 4, 15), TODAY]
     },
     'mamoudou_gassama': {
         'query': 'Mamoudou OR Gassama',
-        'date': [date(2018, 5, 26), date.today()]
+        'date': [date(2018, 5, 26), TODAY]
     },
     'pma_gpa': {
         'query': 'PMA OR GPA',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'aquarius': {
         'query': 'Aquarius',
-        'date': [date(2018, 6, 8), date.today()]
+        'date': [date(2018, 6, 8), TODAY]
     },
     'dimitri_payet': {
         'query': '"Dimitri Payet"',
@@ -54,7 +56,7 @@ STORIES = {
     },
     'soros': {
         'query': 'Soros',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'beltrame': {
         'query': 'Beltrame',
@@ -62,19 +64,19 @@ STORIES = {
     },
     'macron_aides_sociales': {
         'query': 'Macron AND pognon AND dingue',
-        'date': [date(2018, 6, 10), date.today()]
+        'date': [date(2018, 6, 10), TODAY]
     },
     'virginie_calmels': {
         'query': '"Virginie Calmels"',
-        'date': [date(2018, 6, 1), date.today()]
+        'date': [date(2018, 6, 1), TODAY]
     },
     'anticor': {
         'query': 'Anticor',
-        'date': [date(2018, 6, 1), date.today()]
+        'date': [date(2018, 6, 1), TODAY]
     },
     'salvini': {
         'query': '"Mateo Salvini" AND aquarius',
-        'date': [date(2018, 6, 8), date.today()]
+        'date': [date(2018, 6, 8), TODAY]
     },
     'rabiot': {
         'query': '"Adrien Rabiot"',
@@ -82,19 +84,19 @@ STORIES = {
     },
     'parcoursup': {
         'query': 'parcoursup',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'blanquefort': {
         'query': 'Ford AND Blanquefort',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'whirlpool': {
         'query': 'Whirlpool AND Amiens',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'maduro': {
         'query': 'Maduro AND élection',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'attentat_opera': {
         'query': 'attentat AND opéra',
@@ -102,7 +104,7 @@ STORIES = {
     },
     'attentat_egyptien': {
         'query': 'Collomb AND égyptien',
-        'date': [date(2018, 4, 1), date.today()]
+        'date': [START_DATE, TODAY]
     },
     'macron_vatican': {
         'query': 'Macron AND ("Saint Siège" OR Vatican)',
@@ -114,9 +116,60 @@ STORIES = {
     },
     'benalla': {
         'query': 'Benalla',
-        'date': [date(2018, 7, 15), date.today()]
+        'date': [date(2018, 7, 15), TODAY]
     }
 }
+
+ANSES_STORIES = {
+    'gilets_jaunes': {
+        'query': '"gilet* jaune*"'
+    },
+    'tiques': {
+        'query': '(risque* AND (sant* OR sanit*)) AND tiques'
+    },
+    'nutriscore': {
+        'query': '(risque* AND (sant* OR sanit*)) AND nutriscore'
+    },
+    'xylella': {
+        'query': '(risque* AND (sant* OR sanit*)) AND xylella'
+    },
+    'vetement': {
+        'query': '((risque*OR chimi*) AND (sant* OR sanit*)) AND (vêtement* OR vetemen* OR habit*)'
+    },
+    'terrain_synthetique': {
+        'query': '(risque* AND (sant* OR sanit*)) AND (("terrain* synthétique*") OR ("terrain* synthetique*"))'
+    },
+    'melatonine': {
+        'query': '(risque* AND (sant* OR sanit*)) AND (mélatonine OR melatonine)'
+    },
+    'maladie_professionnelle': {
+        'query': '(risque* AND exposition*  AND (evaluation* OR évaluation*)) AND ("maladie* professionnelle*")'
+    },
+    'consommation_viande': {
+        'query': '((risque* or cancer*) AND nutrition AND (sant* or sanit*)) AND ("consommation de viande")'
+    },
+    'pollution_air': {
+        'query': '(risque* AND (sant* OR sanit*)) AND "pollution de l\'air"'
+    },
+    'amande_abricot': {
+        'query': '((risque* OR cyanure) AND (sant* OR sanit*)) AND (amande AND abricot)'
+    },
+    'abeilles': {
+        'query': '(risque* AND mortalite*  AND (sant* OR sanit*) NOT piq*) AND abeilles'
+    },
+    'barquettes': {
+        'query': '((risque* AND contaminant*) AND (sant* OR sanit*)) AND barquettes'
+    },
+    'linky': {
+        'query': '(risque* AND (sant* OR sanit*)) AND linky'
+    },
+    'aloe_vera': {
+        'query': '((risque* AND feuille*) risque* AND (sant* OR sanit*)) AND ("aloe vera")'
+    }
+}
+
+for story in ANSES_STORIES.values():
+    story['date'] = DEFAULT_DATE
 
 client = mediacloud.api.AdminMediaCloud(MEDIACLOUD_API_KEY)
 trie = LRUTrie.from_csv(MEDIA_FILE, detailed=True)
@@ -155,7 +208,7 @@ with open(OUTPUT_FILE, 'w') as f:
             'count': c
         })
 
-        for story_name, story in STORIES.items():
+        for story_name, story in ANSES_STORIES.items():
             writer.writerow({
                 'id': media['id'],
                 'name': media['name'],

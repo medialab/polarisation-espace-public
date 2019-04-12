@@ -93,8 +93,11 @@ with open(HYPHE) as f, open(SOCIAL, 'w') as of:
             NGRAMS_NAME_INDEX[custom_ngrams_fingerprint(line['NAME'])] = record
 
 # Reading other corpora
+NOT_FOUND_MEDIAS = []
+NOT_FOUND_INDEX = {}
+
 with open(CORPORA_LIST) as f, open(NOT_FOUND, 'w') as nf:
-    writer = csv.DictWriter(nf, fieldnames=['corpus', 'url', 'name'])
+    writer = csv.DictWriter(nf, fieldnames=['corpus', 'url', 'name', 'count'])
     writer.writeheader()
 
     for line in csv.DictReader(f):
@@ -132,8 +135,23 @@ with open(CORPORA_LIST) as f, open(NOT_FOUND, 'w') as nf:
                 if match is not None:
                     match[corpus] = l
                 else:
-                    writer.writerow({
-                        'corpus': corpus,
-                        'url': url or '',
-                        'name': name or ''
-                    })
+
+                    existing_record = NOT_FOUND_INDEX.get(custom_fingerprint(name)) or NOT_FOUND_INDEX.get(custom_ngrams_fingerprint(name))
+
+                    if existing_record is not None:
+                        existing_record['count'] += 1
+                    else:
+
+                        record = {
+                            'corpus': corpus,
+                            'url': url or '',
+                            'name': name or '',
+                            'count': 1
+                        }
+
+                        NOT_FOUND_MEDIAS.append(record)
+                        NOT_FOUND_INDEX[custom_fingerprint(name)] = record
+                        NOT_FOUND_INDEX[custom_ngrams_fingerprint(name)] = record
+
+    for line in NOT_FOUND_MEDIAS:
+        writer.writerow(line)

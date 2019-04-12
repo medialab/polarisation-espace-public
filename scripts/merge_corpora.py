@@ -3,9 +3,15 @@
 # Script attempting to merge sources from a variety of different corpora
 # =============================================================================
 #
+import re
 import csv
 from os.path import join
 from ural import LRUTrie
+from fog.key import create_fingerprint, create_ngrams_fingerprint
+
+STRIP_PARENTHIZED = re.compile(r'\([^)]*\)')
+STRIP_ARTICLES = re.compile(r"(?:l['’]|l[ae]\b|les\b)", re.I)
+STRIP_TLD = re.compile(r'\.[a-z]{1,4}$', re.I)
 
 SOURCES = './data/sources.csv'
 HYPHE = './data/corpora/corpus_hyphe_curated.csv'
@@ -13,8 +19,27 @@ CORPORA_LIST = './data/corpora/corpora.csv'
 NOT_FOUND = './data/not-found.csv'
 SOCIAL = './data/social.csv'
 
+FILTERS = {
+    'factiva-no-urls.csv': lambda line: line['Language (slg)'] == 'French'
+}
+
+NAME_PROCESSORS = {
+    'factiva-no-urls.csv': lambda name: re.sub(STRIP_PARENTHIZED, '', name).strip()
+}
+
+fingerprint = create_fingerprint(split=('-'))
+def custom_fingerprint(string):
+    return fingerprint(re.sub(STRIP_ARTICLES, '', re.sub(STRIP_TLD, '', string)))
+
+ngrams_fingerprint = create_ngrams_fingerprint(split=('-'))
+def custom_ngrams_fingerprint(string):
+    return ngrams_fingerprint(2, re.sub(STRIP_ARTICLES, '', re.sub(STRIP_TLD, '', string)))
+
+
 TRIE = LRUTrie(strip_trailing_slash=True)
 SOCIAL_TRIE = LRUTrie(strip_trailing_slash=True)
+NAME_INDEX = {}
+NGRAMS_NAME_INDEX = {}
 
 SOCIAL_TRIE.set('twitter.com', 'twitter')
 SOCIAL_TRIE.set('twitter.fr', 'twitter')
@@ -24,7 +49,10 @@ SOCIAL_TRIE.set('facebook.fr', 'facebook')
 # Reading master corpus
 with open(SOURCES) as f:
     for line in csv.DictReader(f):
-        TRIE.set(line['url'], {'polarisation': line})
+        record = {'polarisation': line}
+        TRIE.set(line['url'], record)
+        NAME_INDEX[custom_fingerprint(line['name'])] = record
+        NGRAMS_NAME_INDEX[custom_ngrams_fingerprint(line['name'])] = record
 
 # Reading hyphe corpus
 with open(HYPHE) as f, open(SOCIAL, 'w') as of:
@@ -60,6 +88,9 @@ with open(HYPHE) as f, open(SOCIAL, 'w') as of:
         if match is None:
             # TODO: output them
             print('Could not match', line['NAME'], line['STATUS'])
+        else:
+            NAME_INDEX[custom_fingerprint(line['NAME'])] = match
+            NGRAMS_NAME_INDEX[custom_ngrams_fingerprint(line['NAME'])] = record
 
 # Reading other corpora
 with open(CORPORA_LIST) as f, open(NOT_FOUND, 'w') as nf:
@@ -67,26 +98,42 @@ with open(CORPORA_LIST) as f, open(NOT_FOUND, 'w') as nf:
     writer.writeheader()
 
     for line in csv.DictReader(f):
+        corpus = line['filename']
+        print('Merging %s' % corpus)
 
         url_field = line['url']
         name_field = line['name']
 
-        # Skipping corpora without url information for now
-        if not url_field:
-            continue
+        preprocessor = NAME_PROCESSORS.get(corpus)
+        filtering = FILTERS.get(corpus)
 
-        with open(join('.', 'data', 'corpora', line['filename'])) as g:
+        with open(join('.', 'data', 'corpora', corpus)) as g:
             for l in csv.DictReader(g):
-                url = l[url_field]
-                name = l.get(name_field, '')
 
-                match = TRIE.match(url)
+                if filtering and not filtering(l):
+                    continue
+
+                url = l.get(url_field) if url_field else None
+                name = l.get(name_field) if name_field else None
+                match = None
+
+                if preprocessor and name:
+                    name = preprocessor(name)
+
+                if url is not None:
+                    match = TRIE.match(url)
+
+                if name is not None and match is None:
+                    match = NAME_INDEX.get(custom_fingerprint(name))
+
+                    if match is None:
+                        match = NGRAMS_NAME_INDEX.get(custom_ngrams_fingerprint(name))
 
                 if match is not None:
-                    match[line['filename']] = l
+                    match[corpus] = l
                 else:
                     writer.writerow({
-                        'corpus': line['filename'],
-                        'url': url,
-                        'name': name
+                        'corpus': corpus,
+                        'url': url or '',
+                        'name': name or ''
                     })

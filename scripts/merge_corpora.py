@@ -6,7 +6,7 @@
 import re
 import csv
 from os.path import join
-from ural import LRUTrie
+from ural import LRUTrie, normalize_url
 from fog.key import create_fingerprint, create_ngrams_fingerprint
 
 STRIP_PARENTHIZED = re.compile(r'\([^)]*\)')
@@ -18,6 +18,7 @@ HYPHE = './data/corpora/corpus_hyphe_curated.csv'
 CORPORA_LIST = './data/corpora/corpora.csv'
 NOT_FOUND = './data/not-found.csv'
 SOCIAL = './data/social.csv'
+PREFIX_REPORT = './data/prefix-report.md'
 
 FILTERS = {
     'factiva-no-urls.csv': lambda line: line['Language (slg)'] == 'French'
@@ -55,10 +56,14 @@ with open(SOURCES) as f:
         NGRAMS_NAME_INDEX[custom_ngrams_fingerprint(line['name'])] = record
 
 # Reading hyphe corpus
-with open(HYPHE) as f, open(SOCIAL, 'w') as of:
+with open(HYPHE) as f, open(SOCIAL, 'w') as of, open(PREFIX_REPORT, 'w') as rf:
     reader = csv.DictReader(f)
     writer = csv.DictWriter(of, fieldnames=reader.fieldnames + ['twitter', 'facebook', 'twitter_count', 'facebook_count'])
     writer.writeheader()
+
+    p = lambda x: print(x, file=rf)
+
+    p('# Prefix Report')
 
     for line in reader:
         prefixes = line['PREFIXES AS URL'].split(' ')
@@ -91,6 +96,35 @@ with open(HYPHE) as f, open(SOCIAL, 'w') as of:
         else:
             NAME_INDEX[custom_fingerprint(line['NAME'])] = match
             NGRAMS_NAME_INDEX[custom_ngrams_fingerprint(line['NAME'])] = record
+
+        # Warning for entities having dubious home pages
+        home_page = line['HOME PAGE']
+
+        if 'twitter' in home_page or 'facebook' in home_page:
+            print('WARNING: %s has a dubious home page %s' % (line['NAME'], home_page))
+
+        # Printing report
+        unique_prefixes = set(
+            normalize_url(prefix, strip_trailing_slash=True)
+            for prefix
+            in prefixes
+            if not (
+                'twitter' in prefix or
+                'facebook' in prefix or
+                'google' in prefix or
+                'pinterest' in prefix
+            )
+        )
+
+        if len(unique_prefixes) < 2:
+            continue
+
+        p('')
+        p('## %s' % line['NAME'])
+        p('')
+
+        for prefix in sorted(unique_prefixes, key=lambda p: len(p.split('/'))):
+            p('* %s' % prefix)
 
 # Reading other corpora
 NOT_FOUND_MEDIAS = []

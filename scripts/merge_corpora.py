@@ -73,6 +73,9 @@ with open(HYPHE) as f, open(SOCIAL, 'w') as of, open(PREFIX_REPORT, 'w') as rf:
             match = TRIE.match(prefix)
 
             if match is not None:
+                # if 'hyphe' in match:
+                #     print('DOUBLE', line['NAME'])
+
                 match['hyphe'] = line
 
                 for prefix in prefixes:
@@ -125,6 +128,11 @@ with open(HYPHE) as f, open(SOCIAL, 'w') as of, open(PREFIX_REPORT, 'w') as rf:
 
         for prefix in sorted(unique_prefixes, key=lambda p: len(p.split('/'))):
             p('* %s' % prefix)
+
+# Sanity check
+for media in TRIE.trie.values():
+    if 'hyphe' not in media:
+        print('NOT-IN-HYPHE', media['polarisation']['name'], media['polarisation']['url'])
 
 # Reading other corpora
 NOT_FOUND_MEDIAS = []

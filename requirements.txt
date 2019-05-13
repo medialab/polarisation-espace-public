@@ -3,4 +3,4 @@ mediacloud==3.0.3
 networkx==2.1
 phylactery==0.2.2
 progressbar2==3.37.1
-ural==0.6.1
+ural==0.8.0

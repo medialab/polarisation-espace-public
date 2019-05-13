@@ -2,7 +2,7 @@
 import csv
 from ural import LRUTrie, normalize_url
 
-CORPUS = './data/corpora/corpus_hyphe_curated.csv'
+CORPUS = './data/corpora/corpus_hyphe_curated_elections.csv'
 OUTPUT = './data/corpus_hyphe_curated_with_twitter_search.csv'
 NORMALIZE_KWARGS = {
     'strip_trailing_slash': True,
@@ -15,6 +15,11 @@ with open(CORPUS) as f, open(OUTPUT, 'w') as wf:
     writer.writeheader()
 
     for line in reader:
+        batch = line['batch (TAGS)']
+
+        if batch == 'EU':
+            continue
+
         prefixes = LRUTrie(**NORMALIZE_KWARGS)
 
         for prefix in line['PREFIXES AS URL'].split(' '):
@@ -30,3 +35,6 @@ with open(CORPUS) as f, open(OUTPUT, 'w') as wf:
         search_keyword = normalize_url(matching_prefix, **NORMALIZE_KWARGS)
 
         print(line['NAME'], '=>', search_keyword)
+
+        line['twitter_search'] = search_keyword
+        writer.writerow(line)

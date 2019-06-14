@@ -20,11 +20,21 @@ client = mediacloud.api.AdminMediaCloud(MEDIACLOUD_API_KEY)
 
 LEMONDE_ID = 39072
 ROWS = 20
-OUTPUT = './data/lemonde.csv'
+OUTPUT = './data/paywalled.csv'
 FILTER = 'media_id:%i' % LEMONDE_ID
 DATE = client.publish_date_query(date(2018, 4, 1), date.today())
 
-estimation_result = client.storyCount(FILTER, solr_filter=DATE)
+PAYWALLED = {
+    'lemonde': 39072,
+    'lefigaro': 39120,
+    'atlantico': 49686,
+    'mediapart': 54004,
+    'lavoixdunord': 39802
+}
+
+PAYWALLED_FILTER = ' OR '.join('media_id:%i' % i for i in PAYWALLED.values())
+
+estimation_result = client.storyCount(PAYWALLED_FILTER, solr_filter=DATE)
 
 print('Estimating %i stories to fetch.' % estimation_result['count'])
 

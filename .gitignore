@@ -9,4 +9,5 @@ data
 *.gz
 *.pyx
 *.gexf
+*.graphml
 config.py

@@ -27,25 +27,32 @@ nL = 10
 deg_corr = True
 state = gt.minimize_nested_blockmodel_dl(g, deg_corr=deg_corr)     # Initialize the Markov
                                                                    # chain from the "ground
-print("Markox chain bootstrapped")
+print("Markov chain bootstrapped")
 
 bs = state.get_bs()                     # Get hierarchical partition.
 bs += [np.zeros(1)] * (nL - len(bs))    # Augment it to L = 10 with
                                         # single-group levels.
+print("Hierarchy inferred")
 
 state = state.copy(bs=bs, sampling=True)
+
+print("Model sampled")
 
 dls = []                               # description length history
 vm = [None] * len(state.get_levels())  # vertex marginals
 em = None                              # edge marginals
 
+print("Levels extracted")
 
 # Recherche d'une meilleure solution avec sweeps (augmenter force_niter au besoin)
 # Now we collect the marginal distributions for exactly 200,000 sweeps
 gt.mcmc_equilibrate(state, force_niter=200000, mcmc_args=dict(niter=10),
                     callback=collect_marginals)
+print("Model equilibrated")
 S_mf = [gt.mf_entropy(sl.g, vm[l]) for l, sl in enumerate(state.get_levels())]
+print("MF Entropy computed")
 S_bethe = gt.bethe_entropy(g, em)[0]
+print("Bethe entropy computed")
 L = -np.mean(dls)
 
 print("Model evidence for deg_corr = %s:" % deg_corr,
@@ -68,6 +75,7 @@ for v in state.g.vertices():
 
 state.draw(output="hyphe_nested_bm_noncorr3_filteredcorr.png",vertex_text=state.g.vertex_properties['label'],vertex_text_rotation=state.g.vertex_properties['text_rot'],vertex_size=1,vertex_text_position=1,output_size=(2000, 2000))
 
+print("Wheel drawn")
 
 # et très important pour retrouver la roue à l'avenir ou la sauvegarde
 

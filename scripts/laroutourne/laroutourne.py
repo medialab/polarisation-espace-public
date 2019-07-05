@@ -16,11 +16,14 @@ g=gt.load_graph(graphmlfile)
 print("Graph loaded")
 
 def collect_marginals(s):
-        global vm, em
+        global vm, em, count
         levels = s.get_levels()
         vm = [sl.collect_vertex_marginals(vm[l]) for l, sl in enumerate(levels)]
         em = levels[0].collect_edge_marginals(em)
         dls.append(s.entropy())
+        count +=1
+        if count % 2000 == 0:
+            print("%s iterations done (%s)" % (count, str(count/2000)+"%"))
 
 
 nL = 10
@@ -41,6 +44,7 @@ print("Model sampled")
 dls = []                               # description length history
 vm = [None] * len(state.get_levels())  # vertex marginals
 em = None                              # edge marginals
+count = 0
 
 print("Levels extracted")
 

@@ -7,8 +7,12 @@ filename = sys.argv[1]
 
 G = nx.read_gexf(filename)
 
-for nid, batch in G.nodes(data="batch"):
-    if batch == "EU":
-        del G.node[nid]
+for nid, data in G.nodes(data="batch"):
+    if data['batch'] == "EU":
+        G.remove_node(nid)
+
+for nid, data in G.nodes(data="batch"):
+    if G.in_degree(nid) < 3:
+        G.remove_node(nid)
 
 nx.write_gexf(G, filename.replace(".gexf", "-filtered.gexf"))

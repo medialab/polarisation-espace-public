@@ -16,6 +16,7 @@ else:
     IMG_WIDTH = 3072
 
 statefile = graphmlfile.replace(".graphml", "") + "-%s.state" % NB_ITERS
+imgfile = graphmlfile.replace(".graphml", "") + "-%s-%s.png" % (NB_ITERS, IMG_WIDTH)
 
 with open(statefile, "rb") as f:
     state = pickle.load(f)
@@ -35,7 +36,7 @@ for v in state.g.vertices():
     else:
         text_rot[v] = math.pi + math.atan(position[v][1]/position[v][0])
 
-state.draw(output="hyphe_nested_bm_noncorr3_filteredcorr-%s-%s.png" % (NB_ITERS, IMG_WIDTH), vertex_text=state.g.vertex_properties['label'], vertex_text_rotation=state.g.vertex_properties['text_rot'], vertex_size=1, vertex_text_position=1, output_size=(IMG_WIDTH, IMG_WIDTH))
+state.draw(output=imgfile, vertex_text=state.g.vertex_properties['label'], vertex_text_rotation=state.g.vertex_properties['text_rot'], vertex_size=1, vertex_text_position=1, output_size=(IMG_WIDTH, IMG_WIDTH))
 
 print("Wheel drawn")
 

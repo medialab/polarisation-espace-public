@@ -9,7 +9,13 @@ import graph_tool.all as gt
 # GraphTool doc https://graph-tool.skewed.de/static/doc/index.html
 
 graphmlfile = sys.argv[1]
-statefile = graphmlfile.replace(".graphml", ".state")
+
+if len(sys.argv) > 2:
+    NB_ITERS = int(sys.argv[2])
+else:
+    NB_ITERS = 200000
+
+statefile = graphmlfile.replace(".graphml", "") + "-%s.state" % NB_ITERS
 
 #plus simple de charger le réseau en graphml apparemment
 g=gt.load_graph(graphmlfile)
@@ -17,14 +23,14 @@ g=gt.load_graph(graphmlfile)
 print("Graph loaded")
 
 def collect_marginals(s):
-        global vm, em, count
-        levels = s.get_levels()
-        vm = [sl.collect_vertex_marginals(vm[l]) for l, sl in enumerate(levels)]
-        em = levels[0].collect_edge_marginals(em)
-        dls.append(s.entropy())
-        count +=1
-        if count % 2000 == 0:
-            print("%s iterations done (%s)" % (count, str(count/2000)+"%"))
+    global vm, em, count
+    levels = s.get_levels()
+    vm = [sl.collect_vertex_marginals(vm[l]) for l, sl in enumerate(levels)]
+    em = levels[0].collect_edge_marginals(em)
+    dls.append(s.entropy())
+    count += 1
+    if count % 2000 == 0:
+        print("%s iterations done (%s)" % (count, str(100*count/NB_ITERS)+"%"))
 
 
 nL = 10
@@ -50,8 +56,8 @@ count = 0
 print("Levels extracted")
 
 # Recherche d'une meilleure solution avec sweeps (augmenter force_niter au besoin)
-# Now we collect the marginal distributions for exactly 200,000 sweeps
-gt.mcmc_equilibrate(state, force_niter=200000, mcmc_args=dict(niter=10),
+# Now we collect the marginal distributions for exactly NB_ITERS sweeps
+gt.mcmc_equilibrate(state, force_niter=NB_ITERS, mcmc_args=dict(niter=10),
                     callback=collect_marginals)
 print("Model equilibrated")
 S_mf = [gt.mf_entropy(sl.g, vm[l]) for l, sl in enumerate(state.get_levels())]

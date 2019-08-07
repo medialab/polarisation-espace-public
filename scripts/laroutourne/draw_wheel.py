@@ -3,25 +3,36 @@ import pickle
 import math
 
 graphmlfile = sys.argv[1]
-statefile = graphmlfile.replace(".graphml", ".state")
+
+if len(sys.argv) > 2:
+    NB_ITERS = int(sys.argv[2])
+else:
+    NB_ITERS = 200000
+
+if len(sys.argv) > 3:
+    IMG_WIDTH = int(sys.argv[3])
+else:
+    IMG_WIDTH = 3072
+
+statefile = graphmlfile.replace(".graphml", "") + "-%s.state" % NB_ITERS
 
 with open(statefile, "rb") as f:
     state = pickle.load(f)
 
-# et puis on trace la roue:
+pos=state.draw(output="blockmodel_simple_filtered-%s-%s.png" % (NB_ITERS, IMG_WIDTH), vertex_text=state.g.vertex_properties['label'], vertex_text_position=1, output_size=(IMG_WIDTH, IMG_WIDTH), vertex_size=1)
+position = pos[2]
 
-pos=state.draw(output="blockmodel_simple_filtered.png",vertex_text=state.g.vertex_properties['label'],vertex_text_position=1,output_size=(2048, 2048),vertex_size=1)
-position=pos[2]
+print("Block model drawn")
 
 text_rot = state.g.new_vertex_property('double')
 state.g.vertex_properties['text_rot'] = text_rot
 for v in state.g.vertices():
-    if position[v][0] >0:
+    if position[v][0] > 0 :
         text_rot[v] = math.atan(position[v][1]/position[v][0])
     else:
         text_rot[v] = math.pi + math.atan(position[v][1]/position[v][0])
 
-state.draw(output="hyphe_nested_bm_noncorr3_filteredcorr.png",vertex_text=state.g.vertex_properties['label'],vertex_text_rotation=state.g.vertex_properties['text_rot'],vertex_size=1,vertex_text_position=1,output_size=(3072, 3072))
+state.draw(output="hyphe_nested_bm_noncorr3_filteredcorr-%s-%s.png" % (NB_ITERS, IMG_WIDTH), vertex_text=state.g.vertex_properties['label'], vertex_text_rotation=state.g.vertex_properties['text_rot'], vertex_size=1, vertex_text_position=1, output_size=(IMG_WIDTH, IMG_WIDTH))
 
 print("Wheel drawn")
 

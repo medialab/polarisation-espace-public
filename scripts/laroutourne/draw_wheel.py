@@ -1,6 +1,7 @@
+import os
 import sys
-import pickle
 import math
+import pickle
 
 graphmlfile = sys.argv[1]
 
@@ -19,10 +20,12 @@ statefile = graphmlfile.replace(".graphml", "") + "-%s.state" % NB_ITERS
 with open(statefile, "rb") as f:
     state = pickle.load(f)
 
-pos=state.draw(output="blockmodel_simple_filtered-%s-%s.png" % (NB_ITERS, IMG_WIDTH), vertex_text=state.g.vertex_properties['label'], vertex_text_position=1, output_size=(IMG_WIDTH, IMG_WIDTH), vertex_size=1)
+tmp_wheel = "blockmodel_simple_filtered-%s-%s.png" % (NB_ITERS, IMG_WIDTH)
+pos=state.draw(output=tmp_wheel, vertex_text=state.g.vertex_properties['label'], vertex_text_position=1, output_size=(1, 1), vertex_size=1)
 position = pos[2]
+os.remove(tmp_wheel)
 
-print("Block model drawn")
+print("Temp wheel drawn...")
 
 text_rot = state.g.new_vertex_property('double')
 state.g.vertex_properties['text_rot'] = text_rot

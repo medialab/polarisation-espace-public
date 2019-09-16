@@ -30,9 +30,10 @@ TWEETS_FILE = './data/180918_polarisation_users_links_isrt.csv'
 OUTPUT_FILE = './data/bipartite-user-media'
 SIMILARITY_THRESHOLD = 0.03
 LIMIT = None
+NAME_FIELD = 'NAME'
 
 print('Indexing medias...')
-MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True, urlfield='PREFIXES AS URL', namefield='NAME')
+MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True, urlfield='PREFIXES AS URL', namefield=NAME_FIELD)
 
 print('Streaming tweets...')
 
@@ -69,7 +70,7 @@ with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE + ".csv", 'w') as of:
 
             if media:
 
-                USER_VECTORS[media['name']][user_id] += 1
+                USER_VECTORS[media[NAME_FIELD]][user_id] += 1
 
                 writer.writerow({
                     'user': user,
@@ -77,7 +78,7 @@ with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE + ".csv", 'w') as of:
                     'normalized_url': normalize_url(link)
                 })
 
-MEDIAS = [media['name'] for media in MEDIAS_TRIE.values]
+MEDIAS = [media[NAME_FIELD] for media in MEDIAS_TRIE.values]
 
 print('Found %i unique users.' % len(USER_IDS))
 print('Found %i unique medias.' % len(MEDIAS))

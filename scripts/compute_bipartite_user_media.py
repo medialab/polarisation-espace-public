@@ -32,7 +32,7 @@ SIMILARITY_THRESHOLD = 0.03
 LIMIT = None
 
 print('Indexing medias...')
-MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True)
+MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True, urlfield='PREFIXES AS URL', namefield='NAME')
 
 print('Streaming tweets...')
 

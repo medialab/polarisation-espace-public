@@ -114,13 +114,17 @@ class LRUTrie(object):
         return last_leaf
 
     @staticmethod
-    def from_csv(filename, detailed=False):
+    def from_csv(filename, urlfield='url', urlseparator=None, namefield='name', detailed=False):
         trie = LRUTrie()
 
         with open(filename, 'r') as f:
             reader = csv.DictReader(f)
 
             for line in reader:
-                trie.set(line['url'], line['name'] if not detailed else line)
+                if urlseparator:
+                    for url in line[urlfield].split(urlseparator):
+                        trie.set(url, line[namefield] if not detailed else line)
+                else:
+                    trie.set(line[urlfield], line[namefield] if not detailed else line)
 
         return trie

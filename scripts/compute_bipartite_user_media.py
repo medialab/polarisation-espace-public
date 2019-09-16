@@ -14,7 +14,7 @@ import math
 import itertools
 import networkx as nx
 from collections import Counter, defaultdict
-from fog.metrics import sparse_dotproduct, weighted_jaccard_similarity
+from fog.metrics import sparse_dot_product, weighted_jaccard_similarity
 from progressbar import ProgressBar
 from ural import normalize_url
 
@@ -106,7 +106,7 @@ for i in bar(range(len(MEDIAS))):
         norm2 = MEDIA_NORMS[media2]
 
         # TODO: make option to pass norm to sparse_cosine_similarity
-        dotproduct = sparse_dotproduct(vector1, vector2)
+        dotproduct = sparse_dot_product(vector1, vector2)
         cosine = 0.0
 
         if norm1 != 0 and norm2 != 0:

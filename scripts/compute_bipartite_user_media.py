@@ -27,7 +27,7 @@ from lib.lru_trie import LRUTrie
 # Parameters
 MEDIA_FILE = './data/sources.csv'
 TWEETS_FILE = './data/180918_polarisation_users_links_isrt.csv'
-OUTPUT_FILE = './data/bipartite-user-media'
+OUTPUT_FILE = './data/%spartite-user-media'
 SIMILARITY_THRESHOLD = 0.03
 LIMIT = None
 NAME_FIELD = 'NAME'
@@ -47,7 +47,7 @@ USER_VECTORS = defaultdict(Counter)
 #         for row in chunk.itertuples():
 #             yield row
 
-with open(TWEETS_FILE, 'r') as tf, open(OUTPUT_FILE + ".csv", 'w') as of:
+with open(TWEETS_FILE, 'r') as tf, open((OUTPUT_FILE % "bi") + ".csv", 'w') as of:
     reader = csv.DictReader(tf)
     writer = csv.DictWriter(of, fieldnames=['user', 'media', 'normalized_url'])
     writer.writeheader()
@@ -122,7 +122,7 @@ for i in bar(range(len(MEDIAS))):
             monopartite_jaccard.add_edge(media1, media2, weight=jaccard)
 
 print('Resulting cosine monopartite graph has %i nodes and %i edges.' % (monopartite_cosine.order(), monopartite_cosine.size()))
-nx.write_gexf(monopartite_cosine, OUTPUT_FILE + '-cosine.gexf')
+nx.write_gexf(monopartite_cosine, (OUTPUT_FILE % "mono") + '-cosine.gexf')
 
 print('Resulting jaccard monopartite graph has %i nodes and %i edges.' % (monopartite_jaccard.order(), monopartite_jaccard.size()))
-nx.write_gexf(monopartite_jaccard, OUTPUT_FILE + '-jaccard.gexf')
+nx.write_gexf(monopartite_jaccard, (OUTPUT_FILE % "mono") + '-jaccard.gexf')

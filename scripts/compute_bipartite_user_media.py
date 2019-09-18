@@ -74,7 +74,7 @@ with open(TWEETS_FILE, 'r') as tf, open((OUTPUT_FILE % "bi") + ".csv", 'w') as o
 
                 writer.writerow({
                     'user': user,
-                    'media': media['webentity'],
+                    'media': media[NAME_FIELD],
                     'normalized_url': normalize_url(link)
                 })
 

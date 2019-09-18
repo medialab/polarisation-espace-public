@@ -50,6 +50,9 @@ def generate_www_variation(lru):
         if len([stem for stem in lru if stem.startswith('h:')]) > 1:
             return None
 
+        if not lru:
+            return None
+
         if lru[0].startswith('t:'):
             return lru[:2] + ['h:www'] + lru[2:]
         else:

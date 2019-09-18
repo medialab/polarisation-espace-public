@@ -39,4 +39,3 @@ for v in state.g.vertices():
 state.draw(output=imgfile, vertex_text=state.g.vertex_properties['label'], vertex_text_rotation=state.g.vertex_properties['text_rot'], vertex_size=1, vertex_text_position=1, output_size=(IMG_WIDTH, IMG_WIDTH))
 
 print("Wheel drawn")
-

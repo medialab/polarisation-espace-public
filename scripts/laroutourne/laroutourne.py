@@ -22,16 +22,6 @@ g=gt.load_graph(graphmlfile)
 
 print("Graph loaded")
 
-def collect_marginals(s):
-    global vm, em, count
-    levels = s.get_levels()
-    vm = [sl.collect_vertex_marginals(vm[l]) for l, sl in enumerate(levels)]
-    em = levels[0].collect_edge_marginals(em)
-    dls.append(s.entropy())
-    count += 1
-    if count % 2000 == 0:
-        print("%s iterations done (%s)" % (count, str(100*count/NB_ITERS)+"%"))
-
 
 nL = 10
 deg_corr = True
@@ -48,26 +38,36 @@ state = state.copy(bs=bs, sampling=True)
 
 print("Model sampled")
 
+# Recherche d'une meilleure solution avec sweeps (augmenter force_niter au besoin)
+# Now we collect the marginal distributions for exactly NB_ITERS sweeps
+
+def collect_marginals(s):
+    global vm, em, count
+    levels = s.get_levels()
+    vm = [sl.collect_vertex_marginals(vm[l]) for l, sl in enumerate(levels)]
+    em = levels[0].collect_edge_marginals(em)
+    dls.append(s.entropy())
+    count += 1
+    if count % 2000 == 0:
+        print("%s iterations done (%s)" % (count, str(100*count/NB_ITERS)+"%"))
+
 dls = []                               # description length history
 vm = [None] * len(state.get_levels())  # vertex marginals
 em = None                              # edge marginals
 count = 0
 
-print("Levels extracted")
+#gt.mcmc_equilibrate(state, force_niter=NB_ITERS, mcmc_args=dict(niter=10),
+#                    callback=collect_marginals)
+#print("Model equilibrated")
 
-# Recherche d'une meilleure solution avec sweeps (augmenter force_niter au besoin)
-# Now we collect the marginal distributions for exactly NB_ITERS sweeps
-gt.mcmc_equilibrate(state, force_niter=NB_ITERS, mcmc_args=dict(niter=10),
-                    callback=collect_marginals)
-print("Model equilibrated")
-S_mf = [gt.mf_entropy(sl.g, vm[l]) for l, sl in enumerate(state.get_levels())]
-print("MF Entropy computed")
-S_bethe = gt.bethe_entropy(g, em)[0]
-print("Bethe entropy computed")
-L = -np.mean(dls)
+#S_mf = [gt.mf_entropy(sl.g, vm[l]) for l, sl in enumerate(state.get_levels())]
+#print("MF Entropy computed")
+#S_bethe = gt.bethe_entropy(g, em)[0]
+#print("Bethe entropy computed")
+#L = -np.mean(dls)
 
-print("Model evidence for deg_corr = %s:" % deg_corr,
-      L + sum(S_mf), "(mean field),", L + S_bethe + sum(S_mf[1:]), "(Bethe)")
+#print("Model evidence for deg_corr = %s:" % deg_corr,
+#      L + sum(S_mf), "(mean field),", L + S_bethe + sum(S_mf[1:]), "(Bethe)")
 
 # et très important pour retrouver la roue à l'avenir ou la sauvegarde
 with open(statefile, "wb") as f:

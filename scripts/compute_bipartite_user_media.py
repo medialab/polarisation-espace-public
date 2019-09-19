@@ -78,7 +78,7 @@ with open(TWEETS_FILE, 'r') as tf, open((OUTPUT_FILE % "bi") + ".csv", 'w') as o
                     'normalized_url': normalize_url(link)
                 })
 
-MEDIAS = [media[NAME_FIELD] for media in MEDIAS_TRIE.values]
+MEDIAS = list(set([media[NAME_FIELD] for media in MEDIAS_TRIE.values]))
 
 print('Found %i unique users.' % len(USER_IDS))
 print('Found %i unique medias.' % len(MEDIAS))

@@ -6,6 +6,7 @@
 # library in the future.
 #
 import csv
+import sys
 from urllib.parse import urlparse
 
 # Notes:
@@ -68,6 +69,12 @@ class LRUTrie(object):
 
     def set(self, url, value):
         lru = url_to_lru(url)
+
+        # Do not index bad urls
+        if not lru:
+            print("WARNING: bad prefix for entity: %s %s" % (url, value), file=sys.stderr)
+            return
+
         node = self.root
 
         for stem in lru:

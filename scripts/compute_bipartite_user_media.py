@@ -28,6 +28,7 @@ from lib.lru_trie import LRUTrie
 MEDIA_FILE = './data/sources.csv'
 TWEETS_FILE = './data/180918_polarisation_users_links_isrt.csv'
 OUTPUT_FILE = './data/%spartite-user-media'
+OUTPUT_FILE2 = './data/media-counts.csv'
 SIMILARITY_THRESHOLD = 0.03
 LIMIT = None
 NAME_FIELD = 'NAME'
@@ -87,9 +88,19 @@ print('Computing media norms...')
 
 MEDIA_NORMS = {}
 
-for media in MEDIAS:
-    users = USER_VECTORS[media]
-    MEDIA_NORMS[media] = math.sqrt(sum(map(lambda x: x * x, users.values())))
+with open(OUTPUT_FILE2, 'w') as of:
+    writer = csv.DictWriter(of, fieldnames=['media', 'tweets', 'users'])
+    writer.writeheader()
+
+    for media in MEDIAS:
+        users = USER_VECTORS[media]
+        MEDIA_NORMS[media] = math.sqrt(sum(map(lambda x: x * x, users.values())))
+
+        writer.writerow({
+            'media': media,
+            'tweets': sum(users.values()),
+            'users': len(users)
+        })
 
 monopartite_cosine = nx.Graph()
 monopartite_jaccard = nx.Graph()

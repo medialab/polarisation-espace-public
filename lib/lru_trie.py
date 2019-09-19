@@ -125,9 +125,13 @@ class LRUTrie(object):
 
             for line in reader:
                 if filterrows:
+                    skip = False
                     for k,v in filterrows.items():
                         if k not in line or line[k] != v:
-                            continue
+                            skip = True
+                            break
+                    if skip:
+                        continue
                 if urlseparator:
                     for url in line[urlfield].split(urlseparator):
                         trie.set(url, line[namefield] if not detailed else line)

@@ -33,7 +33,7 @@ LIMIT = None
 NAME_FIELD = 'NAME'
 
 print('Indexing medias...')
-MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True, urlfield='PREFIXES AS URL', urlseparator=' ', namefield=NAME_FIELD)
+MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True, urlfield='PREFIXES AS URL', urlseparator=' ', namefield=NAME_FIELD, filterrows={"type (TAGS)": "media"})
 
 print('Streaming tweets...')
 

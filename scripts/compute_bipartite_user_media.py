@@ -38,10 +38,10 @@ MEDIAS_TRIE = LRUTrie.from_csv(MEDIA_FILE, detailed=True, urlfield='PREFIXES AS 
 
 print('Streaming tweets...')
 
-NB_USERS = 0
 user_id_count = itertools.count()
 USER_IDS = defaultdict(lambda: next(user_id_count))
 USER_VECTORS = defaultdict(Counter)
+MEDIAS_URLS = defaultdict(set)
 
 # def pandas_reader(f):
 #     for chunk in pd.read_csv(f, chunksize=5000, engine='c', dtype=str):
@@ -73,10 +73,13 @@ with open(TWEETS_FILE, 'r') as tf, open((OUTPUT_FILE % "bi") + ".csv", 'w') as o
 
                 USER_VECTORS[media[NAME_FIELD]][user_id] += 1
 
+                norm_link = normalize_url(link)
+                MEDIAS_URLS[media[NAME_FIELD]].add(norm_link)
+
                 writer.writerow({
                     'user': user,
                     'media': media[NAME_FIELD],
-                    'normalized_url': normalize_url(link)
+                    'normalized_url': norm_link
                 })
 
 MEDIAS = list(set([media[NAME_FIELD] for media in MEDIAS_TRIE.values]))
@@ -89,7 +92,7 @@ print('Computing media norms...')
 MEDIA_NORMS = {}
 
 with open(OUTPUT_FILE2, 'w') as of:
-    writer = csv.DictWriter(of, fieldnames=['media', 'tweets', 'users'])
+    writer = csv.DictWriter(of, fieldnames=['media', 'tweets', 'users', 'shared_urls', 'user_vector_norm'])
     writer.writeheader()
 
     for media in MEDIAS:
@@ -99,7 +102,9 @@ with open(OUTPUT_FILE2, 'w') as of:
         writer.writerow({
             'media': media,
             'tweets': sum(users.values()),
-            'users': len(users)
+            'users': len(users),
+            'shared_urls': len(MEDIAS_URLS[media]),
+            'user_vector_norm': MEDIA_NORMS[media]
         })
 
 monopartite_cosine = nx.Graph()

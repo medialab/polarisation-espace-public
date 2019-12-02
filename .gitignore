@@ -12,4 +12,5 @@ data
 *.graphml
 *.png
 *.state
+.python-version
 config.py

@@ -1,3 +1,4 @@
+beautifulsoup4
 fog==0.6.0
 mediacloud==3.0.3
 networkx==2.1

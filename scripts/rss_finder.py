@@ -45,6 +45,8 @@ with open(CORPUS) as cf:
         WEBENTITIES[line['ID']] = line
 
 def find_rss_feeds(url):
+    return set()
+
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
 

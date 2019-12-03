@@ -26,10 +26,12 @@ with open(MATCHING) as mf:
         if not line['ID_hyphe']:
             continue
 
-        if not line['id_mediacloud']:
+        id_mediacloud = line['id_mediacloud'] or line['id_mediacloud_speciaux']
+
+        if not id_mediacloud:
             MISSING.add(line['ID_hyphe'])
         else:
-            MATCHES[line['ID_hyphe']].append(line['id_mediacloud'])
+            MATCHES[line['ID_hyphe']].append(id_mediacloud)
 
 WEBENTITIES = {}
 FIELDNAMES = None
@@ -45,16 +47,17 @@ with open(CORPUS) as cf:
         WEBENTITIES[line['ID']] = line
 
 def find_rss_feeds(url):
-    return set()
+    try:
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, 'html.parser')
 
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html.parser')
+        links = soup.select('link[type="application/rss+xml"][href], link[type="application/atom+xml"][href]')
 
-    links = soup.select('link[type="application/rss+xml"][href], link[type="application/atom+xml"][href]')
+        rss = set(urljoin(r.url, link.get('href')) for link in links)
 
-    rss = set(urljoin(r.url, link.get('href')) for link in links)
-
-    return rss
+        return rss
+    except:
+        return set()
 
 MISSING_RSS_FEED = defaultdict(set)
 
@@ -70,11 +73,14 @@ for weid in MISSING:
         print('  Fetching %s' % url)
         rss = find_rss_feeds(url)
         MISSING_RSS_FEED[weid].update(rss)
-        if len(rss) != 0:
-            print('  Found %i feed(s):' % len(rss))
 
-            for l in rss:
-                print('    - %s' % l)
+    rss = MISSING_RSS_FEED[weid]
+
+    if len(rss) != 0:
+        print('  Found %i feed(s):' % len(rss))
+
+        for l in rss:
+            print('    - %s' % l)
 
     print()
 

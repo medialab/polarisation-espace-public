@@ -1,6 +1,7 @@
 import sys
 import pickle
 
+from time import time
 import numpy as np
 import matplotlib
 matplotlib.use('agg')
@@ -20,22 +21,19 @@ print("Graph loaded")
 
 deg_corr = True
 
-states = []
+best = None
+best_entropy = None
 for i in range(nb_steps):
+    s = time()
     state = gt.minimize_nested_blockmodel_dl(g, deg_corr=deg_corr)
-    states.append(state)
-    print(i, ' over ' + str(nb_steps) + " - model entropy: "  + str(state.entropy()))
+    entropy = state.entropy()
+    print("Run #%s/%s in %ss" % (i, nb_steps, int((time()-s)*100)/100) + " - model entropy: "  + str(entropy))
+    if not best_entropy or entropy < best_entropy:
+        best = state
+        best_entropy = entropy
+        print(" -> Best so far")
 
-entropies = []
-for i in range(nb_steps):
-    entropies.append(states[i])
-
-best_entropy = min(entropies)
-best_state_index = entropies.index(best_entropy)
-best_state = states[best_state_index]
-
-print("Best entropy found:", best_entropy)
 statefile = graphmlfile.replace(".graphml", ".state")
 with open(statefile, "wb") as f:
-    pickle.dump(best_state, f)
+    pickle.dump(best, f)
 

@@ -23,6 +23,7 @@ deg_corr = True
 states = []
 for i in range(nb_steps):
     state = gt.minimize_nested_blockmodel_dl(g, deg_corr=deg_corr)
+    states.append(state)
     print(i, ' over ' + str(nb_steps) + " - model entropy: "  + str(state.entropy()))
 
 entropies = []

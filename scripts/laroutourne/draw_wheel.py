@@ -19,10 +19,9 @@ statefile = graphmlfile.replace(".graphml", ".state")
 with open(statefile, "rb") as f:
     state = pickle.load(f)
 
-entropy = state.entropy()
-imgfile = graphmlfile.replace(".graphml", "") + "-%spx-entropy%s.png" % (IMG_WIDTH, entropy)
+imgfile = graphmlfile.replace(".graphml", "") + "-%spx.png" % IMG_WIDTH
 
-tmp_wheel = "blockmodel_simple_filtered-%spx-entropy%s.png" % (IMG_WIDTH, entropy)
+tmp_wheel = "blockmodel_simple_filtered-%spx.png" % (IMG_WIDTH)
 pos=state.draw(output=tmp_wheel, vertex_text=state.g.vertex_properties['label'], vertex_text_position=1, output_size=(1, 1), vertex_size=1)
 position = pos[2]
 os.remove(tmp_wheel)

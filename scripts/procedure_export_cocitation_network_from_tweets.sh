@@ -24,5 +24,4 @@ cd ~/polarisation-espace-public
 pyenv activate polarisation
 python scripts/compute_bipartite_user_media.py
 
-gzip /store/gazouilloire/public/polarisation/$DAT-polarisation2-FR-users-urls.csv
-
+gzip /store/gazouilloire/public/polarisation/$DAT-polarisation2-FR-users-urls.csv /store/gazouilloire/public/polarisation/$DAT-polarisation2-FR-bipartite-user-media.csv

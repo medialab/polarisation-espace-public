@@ -58,7 +58,7 @@ if __name__ == "__main__":
     #mongo_db_2 = sys.argv[7]
 
     headers = "id,created_at,from_user_name,from_user_id,text,retweet_count,favorite_count,to_user_name,to_user_id,lat,lng,from_user_tweetcount,from_user_followercount,from_user_friendcount,from_user_favourites_count,from_user_listed,from_user_created_at,collected_at_timestamp,retweeted_user_name,retweeted_user_id,quoted_user_name,quoted_user_id,mentioned_user_names,mentioned_user_ids,hashtags,links,medias".split(",")
-    writer = csv.DictWriter(sys.stdout, fieldnames=headers)
+    writer = csv.DictWriter(sys.stdout, fieldnames=headers, extrasaction="ignore")
     writer.writeheader()
 
     medias_trie = LRUTrie.from_csv(medias_file, detailed=False, urlfield='PREFIXES AS URL', urlseparator=' ', namefield="NAME", filterrows={"type (TAGS)": "media"})
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     open_wrapper = gzip_open if first_corpus_csv.endswith(".gz") else open
     with open_wrapper(first_corpus_csv) as f:
         for t in filter_tweets(csv.DictReader(f), list_users, start_timestamp, end_timestamp, medias_trie):
-            writer.writerow(t, extrasaction="ignore")
+            writer.writerow(t)
 
     # read tweets from second corpus (mongo)
 

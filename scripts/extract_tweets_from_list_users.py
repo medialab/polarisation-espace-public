@@ -1,6 +1,7 @@
 import os
 import sys
 import csv
+import gzip
 import time
 from datetime import datetime
 
@@ -24,21 +25,28 @@ def read_list_users(list_users_file):
 
 
 def filter_tweets(tweets_iterator, list_users, start_timestamp, end_timestamp, medias_trie):
-    for t in tweets_iterator:
-        # filter tweets by user
-        if (t["from_user_name"].lower() not in list_users or
-        # filter tweets by timestamp
-            not (start_timestamp < float(t["time"]) < end_timestamp)):
-            continue
-        # extract medias from links
-        t["medias"] = []
-        for l in t["links"].split("|"):
-            media = medias_trie.longest(link)
-            if media:
-                t["medias"].append(media)
-        t["medias"] = "|".join(t["medias"])
-        yield t
+    try:
+        for i, t in enumerate(tweets_iterator):
+            #print(i, t["id"], t["from_user_name"].lower(), start_timestamp, float(t["time"]), end_timestamp, file=sys.stderr)
+            # filter tweets by user
+            if (t["from_user_name"].lower() not in list_users or
+            # filter tweets by timestamp
+                not (start_timestamp < float(t["time"]) < end_timestamp)):
+                continue
+            # extract medias from links
+            t["medias"] = []
+            for link in t["links"].split("|"):
+                media = medias_trie.longest(link)
+                if media:
+                    t["medias"].append(media)
+            t["medias"] = "|".join(t["medias"])
+            yield t
+    except Exception as e:
+        print("ERROR after line", i, t, file=sys.stderr)
+        raise(e)
 
+def gzip_open(filename):
+    return gzip.open(filename, mode="rt")
 
 if __name__ == "__main__":
     list_users_file = sys.argv[1]
@@ -54,17 +62,18 @@ if __name__ == "__main__":
     writer.writeheader()
 
     medias_trie = LRUTrie.from_csv(medias_file, detailed=False, urlfield='PREFIXES AS URL', urlseparator=' ', namefield="NAME", filterrows={"type (TAGS)": "media"})
-    # print(medias_trie.values)
+    # print(medias_trie.values, file=sys.stderr)
 
     list_users = read_list_users(list_users_file)
-    # print(list_users)
+    # print(len(list_users), file=sys.stderr, file=sys.stderr)
 
     start_timestamp = isodate_to_timestamp(start_date)
     end_timestamp = isodate_to_timestamp(end_date) + 86400
-    # print(start_timestamp, end_timestamp)
+    # print(start_timestamp, end_timestamp, file=sys.stderr)
 
     # read tweets from first corpus (csv)
-    with open(first_corpus_csv) as f:
+    open_wrapper = gzip_open if first_corpus_csv.endswith(".gz") else open
+    with open_wrapper(first_corpus_csv) as f:
         for t in filter_tweets(csv.DictReader(f), list_users, start_timestamp, end_timestamp, medias_trie):
             writer.writerow(t)
 

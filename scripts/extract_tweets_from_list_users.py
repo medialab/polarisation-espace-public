@@ -75,7 +75,7 @@ if __name__ == "__main__":
     open_wrapper = gzip_open if first_corpus_csv.endswith(".gz") else open
     with open_wrapper(first_corpus_csv) as f:
         for t in filter_tweets(csv.DictReader(f), list_users, start_timestamp, end_timestamp, medias_trie):
-            writer.writerow(t)
+            writer.writerow(t, extrasaction="ignore")
 
     # read tweets from second corpus (mongo)
 

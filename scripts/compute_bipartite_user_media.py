@@ -25,10 +25,10 @@ sys.path.append(os.path.join(os.getcwd()))
 from lib.lru_trie import LRUTrie
 
 # Parameters
-MEDIA_FILE = './data/sources.csv'
-TWEETS_FILE = './data/180918_polarisation_users_links_isrt.csv'
-OUTPUT_FILE = './data/%spartite-user-media'
-OUTPUT_FILE2 = './data/media-counts.csv'
+MEDIA_FILE = '/store/gazouilloire/public/polarisation/190913-polarisation2-hyphe-corpus.csv'
+TWEETS_FILE = '/store/gazouilloire/public/polarisation/190913-polarisation2-FR-users-urls.csv'
+OUTPUT_FILE = '/store/gazouilloire/public/polarisation/190913-polarisation2-FR-%spartite-user-media'
+OUTPUT_FILE2 = '/store/gazouilloire/public/polarisation/190913-polarisation2-FR-media-counts.csv'
 SIMILARITY_THRESHOLD = 0.03
 LIMIT = None
 NAME_FIELD = 'NAME'

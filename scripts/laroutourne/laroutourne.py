@@ -49,10 +49,10 @@ def write_blocks_csv(statefile):
         print(s)
 
     node_assignment = {}
-    for i in range(g.num_vertices()):
+    for i in range(state.g.num_vertices()):
         for h in range(3):
             r = levels[h].get_blocks()[i]
-            node_assignment.setdefault(g.vp["label"][i], []).append(str(r))
+            node_assignment.setdefault(state.g.vp["label"][i], []).append(str(r))
 
     blocks_csv_file = statefile.replace(".state", "-blocks.csv")
     with open(blocks_csv_file, "w") as f:

@@ -13,8 +13,21 @@ import networkx as nx
 @click.option('--weight/--no-weight', default=False, show_default=True)
 def compute(filename, min_degree, min_indegree, min_outdegree, filter_field, weight):
     """Prepare a GEXF network to be used with laroutourne"""
-    G_in = nx.read_gexf(filename)
-    G_out = nx.read_gexf(filename)
+
+    gexf_text = ""
+    with open(filename) as f:
+        for line in f.readlines():
+            if 'version="1.3"' in line:
+                line = '<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">'
+            elif '<viz:' in line:
+                continue
+            gexf_text += line
+    cleangexf = filename.replace(".gexf", "-clean.gexf")
+    with open(cleangexf, "w") as f:
+        print(gexf_text, file=f)
+
+    G_in = nx.read_gexf(cleangexf)
+    G_out = nx.read_gexf(cleangexf)
 
     filter_key = None
     filter_val = None

@@ -27,7 +27,11 @@ def roll(graphmlfile, nb_attempts, max_clusters, deg_corr=True):
             best_entropy = entropy
             print(" -> Best so far")
 
-    statefile = graphmlfile.replace(".graphml", "-entropy_%s.state" % round(entropy))
+    max_clusters_str = ""
+    if max_clusters:
+        max_clusters_str = "-%s_max_clusters" % max_clusters
+
+    statefile = graphmlfile.replace(".graphml", max_clusters_str+"-entropy_%s.state" % round(entropy))
     with open(statefile, "wb") as f:
         pickle.dump(best, f)
     print("State saved in", statefile)

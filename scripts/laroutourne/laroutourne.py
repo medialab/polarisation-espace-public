@@ -34,8 +34,31 @@ def roll(graphmlfile, nb_attempts, max_clusters, deg_corr=True):
     statefile = graphmlfile.replace(".graphml", max_clusters_str+"-entropy_%s.state" % round(entropy))
     with open(statefile, "wb") as f:
         pickle.dump(best, f)
+
     print("State saved in", statefile)
     return statefile
+
+
+def write_blocks_csv(statefile):
+    with open(statefile, "rb") as f:
+        state = pickle.load(f)
+
+    levels = state.get_levels()
+
+    for s in levels:
+        print(s)
+
+    node_assignment = {}
+    for i in range(g.num_vertices()):
+        for h in range(3):
+            r = levels[h].get_blocks()[i]
+            node_assignment.setdefault(g.vp["label"][i], []).append(str(r))
+
+    blocks_csv_file = statefile.replace(".state", "-blocks.csv")
+    with open(blocks_csv_file, "w") as f:
+        print("label,level_0,level_1,level_2", file=f)
+        for label in node_assignment:
+            print('"%s",' % label.replace('"', '""') + ','.join(node_assignment[label]), file=f)
 
 
 if __name__ == "__main__":
@@ -58,3 +81,4 @@ if __name__ == "__main__":
 
     statefile = roll(graphmlfile, nb_attempts, max_clusters)
     draw_from_state(statefile, img_width)
+    write_blocks_csv(statefile)

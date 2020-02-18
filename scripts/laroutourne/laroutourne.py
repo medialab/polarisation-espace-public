@@ -1,7 +1,8 @@
 import sys
 import pickle
-
 from time import time
+from argparse import ArgumentParser
+
 import numpy as np
 import matplotlib
 matplotlib.use('agg')
@@ -11,7 +12,7 @@ from draw_wheel import draw_from_state
 # GraphTool doc https://graph-tool.skewed.de/static/doc/index.html
 
 
-def roll(graphmlfile, nb_attempts, max_clusters, deg_corr=True):
+def roll(graphmlfile, nb_attempts, min_clusters, max_clusters, deg_corr=True):
     g = gt.load_graph(graphmlfile)
 
     print("Graph loaded")
@@ -19,7 +20,7 @@ def roll(graphmlfile, nb_attempts, max_clusters, deg_corr=True):
     best_entropy = None
     for i in range(nb_attempts):
         s = time()
-        state = gt.minimize_nested_blockmodel_dl(g, deg_corr=deg_corr, B_max=max_clusters)
+        state = gt.minimize_nested_blockmodel_dl(g, deg_corr=deg_corr, B_min=min_clusters, B_max=max_clusters)
         entropy = state.entropy()
         print("Run #%s/%s in %ss" % (i+1, nb_attempts, int((time()-s)*100)/100) + " - model entropy: "  + str(entropy))
         if not best_entropy or entropy < best_entropy:
@@ -61,24 +62,21 @@ def write_blocks_csv(statefile):
             print('"%s",' % label.replace('"', '""') + ','.join(node_assignment[label]), file=f)
 
 
-if __name__ == "__main__":
-    graphmlfile = sys.argv[1]
+def compute():
+    "Compute SBM, write CSV of blocks and draw wheel"
 
-    try:
-        nb_attempts = int(sys.argv[2])
-    except:
-        nb_attempts = 10
+    parser = ArgumentParser(prog='laroutourne')
+    parser.add_argument('graphmlfile', help='GraphML file to process', type=str)
+    parser.add_argument('-n', '--nb-attempts', help='number of SBM runs to try', type=int, default=10)
+    parser.add_argument('-m', '--min-clusters', help='minimum number of clusters desired', type=int)
+    parser.add_argument('-M', '--max-clusters', help='maximum number of clusters desired', type=int)
+    parser.add_argument('-w', '--img-width', help='dimensions of the image of the wheel to generate', type=int, default=3072)
+    args = parser.parse_args()
 
-    try:
-        max_clusters = int(sys.argv[3])
-    except:
-        max_clusters = None
-
-    try:
-        img_width = int(sys.argv[4])
-    except:
-        img_width = 3072
-
-    statefile = roll(graphmlfile, nb_attempts, max_clusters)
-    draw_from_state(statefile, img_width)
+    statefile = roll(args.graphmlfile, args.nb_attempts, args.min_clusters, args.max_clusters)
+    draw_from_state(statefile, args.img_width)
     write_blocks_csv(statefile)
+
+
+if __name__ == "__main__":
+    compute()

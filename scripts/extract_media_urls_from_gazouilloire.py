@@ -12,7 +12,7 @@ def extract_media_urls(db, trie):
     done = set()
     for tweet in db.find({"langs": "fr"}, projection=["links", "proper_links"]):
         for link in tweet.get("proper_links", tweet["links"]):
-            link = normalize_url(link, strip_irrelevant_subdomain=False, strip_protocol=False)
+            link = normalize_url(link, strip_irrelevant_subdomains=False, strip_protocol=False)
             if link in done:
                 continue
             done.add(link)

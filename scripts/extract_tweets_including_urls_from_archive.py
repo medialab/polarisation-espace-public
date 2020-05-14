@@ -57,7 +57,7 @@ def gzip_open(filename):
 if __name__ == "__main__":
     list_urls_file = sys.argv[1]
     csv_archive = sys.argv[2]
-    csv_lines = sys.argv[3] if len(sys.argv) > 3 else None
+    csv_lines = int(sys.argv[3]) if len(sys.argv) > 3 else None
 
     cat_urls = read_list_urls(list_urls_file)
 

@@ -25,7 +25,7 @@ def filter_and_enrich_tweets(f, cat_urls, of=sys.stdout, total=None):
 
     for row in tqdm(casa, total=total):
         try:
-            links = [normalize_url(u) for u in row[links_pos]]
+            links = [normalize_url(u) for u in row[links_pos].split('|')]
             if not links:
                 continue
 

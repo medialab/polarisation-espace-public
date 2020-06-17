@@ -13,11 +13,11 @@ from tweets_metas import get_field
 
 # Read list urls to filter
 def read_list_urls(list_urls_file):
-    categories_medias_urls = defaultdict(lambda: defaultdict(list))
+    categories_medias_urls = defaultdict(lambda: defaultdict(set))
     with open(list_urls_file, "r") as f:
         for row in csv.DictReader(f):
             url = normalize_url(row["clean_url"].strip())
-            categories_medias_urls[row["niv0"]][row["webentity"]].append(url)
+            categories_medias_urls[row["niv0"]][row["webentity"]].add(url)
     return categories_medias_urls
 
 

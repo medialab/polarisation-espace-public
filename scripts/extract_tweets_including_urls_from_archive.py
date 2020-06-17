@@ -66,8 +66,9 @@ def filter_and_enrich_tweets_from_csv(f, cat_urls, of=sys.stdout, total=None):
     casa = casanova.enricher(f, of, add=["matched_urls", "webentities"] + categories)
     links_pos = casa.pos.links
 
-    for row in tqdm(casa, total=total):
-        try:
+
+    try:
+        for row in tqdm(casa, total=total):
             links = [normalize_url(u) for u in row[links_pos].split('|')]
             if not links:
                 continue
@@ -89,9 +90,9 @@ def filter_and_enrich_tweets_from_csv(f, cat_urls, of=sys.stdout, total=None):
             if webentities:
                 casa.writerow(row, ["|".join(matched_urls), "|".join(webentities)] + cat_belongings)
 
-        except Exception as e:
-            print("ERROR while processing", row, file=sys.stderr)
-            raise(e)
+    except Exception as e:
+        print("ERROR while processing", row, file=sys.stderr)
+        raise(e)
 
 
 def gzip_open(filename):

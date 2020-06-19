@@ -1,7 +1,9 @@
 import os
 import sys
+import csv
 import json
 import gzip
+from random import sample
 from datetime import date
 from collections import defaultdict
 
@@ -54,19 +56,21 @@ def sample_tweets(f, index, outdir, total=None, samples_sizes=[100]):
     outfiles = {}
     for siz in samples_sizes:
         for period, indexes in sorted(index.items()):
+            lentweets = len(indexes)
+            ntweets = min(siz, lentweets)
             outf = os.path.join(outdir, "%s_sample_%s.csv" % (period, siz))
-            print("-", period, ":", len(indexes), "tweets", "->", outf)
-            outfiles[outf] = {"file": open(outf)}
+            print("-", period, ":", lentweets, "filtered tweets to", ntweets, "->", outf)
+            outfiles[outf] = {"file": open(outf, "w")}
             outfiles[outf]["writer"] = csv.DictWriter(outfiles[outf]["file"], casa.fieldnames)
             outfiles[outf]["writer"].writeheader()
-            for i in sample(indexes, min(siz, len(indexes))):
+            for i in sample(indexes, ntweets):
                 samples_indexes[siz][i] = outfiles[outf]["writer"]
 
     try:
         for i, row in enumerate(tqdm(casa, total=total)):
             for siz, idx in samples_indexes.items():
                 if i in idx:
-                    idx[i].writerow(row)
+                    idx[i].writerow({k: row[casa.pos[k]] for k in casa.fieldnames})
 
     except Exception as e:
         print("ERROR sampling while working on row #%s:" % i, row, file=sys.stderr)

@@ -61,8 +61,8 @@ def sample_tweets(f, index, outdir, total=None, samples_sizes=[100]):
             outf = os.path.join(outdir, "%s_sample_%s.csv" % (period, siz))
             print("-", period, ":", lentweets, "filtered tweets to", ntweets, "->", outf)
             outfiles[outf] = {"file": open(outf, "w")}
-            outfiles[outf]["writer"] = csv.DictWriter(outfiles[outf]["file"], casa.fieldnames)
-            outfiles[outf]["writer"].writeheader()
+            outfiles[outf]["writer"] = csv.writer(outfiles[outf]["file"])
+            outfiles[outf]["writer"].writerow(casa.fieldnames)
             for i in sample(indexes, ntweets):
                 samples_indexes[siz][i] = outfiles[outf]["writer"]
 
@@ -70,7 +70,7 @@ def sample_tweets(f, index, outdir, total=None, samples_sizes=[100]):
         for i, row in enumerate(tqdm(casa, total=total)):
             for siz, idx in samples_indexes.items():
                 if i in idx:
-                    idx[i].writerow({k: row[casa.pos[k]] for k in casa.fieldnames})
+                    idx[i].writerow(row)
 
     except Exception as e:
         print("ERROR sampling while working on row #%s:" % i, row, file=sys.stderr)

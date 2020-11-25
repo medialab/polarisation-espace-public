@@ -18,7 +18,7 @@ KEEP = {
     'CREATION TIMESTAMP': 'hyphe_creation_timestamp',
     'LAST MODIFICATION TIMESTAMP': 'hyphe_last_modification_timestamp',
     'Portée (TAGS)': 'outreach',
-    'fondation (TAGS)': 'founded',
+    'fondation (TAGS)': 'foundation_year',
     'batch (TAGS)': 'batch',
     'edito (TAGS)': 'edito',
     'Parodique (TAGS)': 'parody',

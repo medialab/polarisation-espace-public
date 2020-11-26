@@ -52,4 +52,7 @@ with open(HYPHE) as cf, open(OUTPUT, 'w') as of:
         formatted = {v: line[k] for k, v in KEEP.items()}
         formatted['mediacloud_ids'] = '|'.join(MATCHES.get(line['ID'], []))
 
+        formatted['prefixes'] = '|'.join(formatted['prefixes'].split(' '))
+        formatted['start_pages'] = '|'.join(formatted['prefixes'].split(' '))
+
         writer.writerow(formatted)

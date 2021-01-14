@@ -6,7 +6,6 @@ from tqdm import tqdm
 from ural import normalize_url
 import casanova
 
-
 def read_urls_types(list_urls_file):
     urls_types = {}
     codes = set()
@@ -16,7 +15,7 @@ def read_urls_types(list_urls_file):
         for row in reader:
             codes.add(row["code"])
             categories.add(row["block"])
-            url = normalize_url(row["clean_url"].strip())
+            url = normalize_url(row["clean_url"].strip(), strip_trailing_slash=True)
             urls_types[url] = [row["code"], row["block"], row["webentity"]]
     return urls_types, list(codes), list(categories)
 
@@ -29,7 +28,7 @@ def filter_and_enrich_tweets_from_csv(f, cat_urls, codes, categories, of=sys.std
     add_pos = {field: i for i, field in enumerate(add_fields)}
     try:
         for row in tqdm(casa, total=total):
-            links = [normalize_url(u) for u in row[links_pos].split('|')]
+            links = [normalize_url(u.strip(), strip_trailing_slash=True) for u in row[links_pos].split('|')]
             if not links:
                 continue
             webentities = set()

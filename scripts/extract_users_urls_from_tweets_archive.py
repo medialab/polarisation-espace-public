@@ -53,7 +53,7 @@ def extract_users_urls_medias_from_csv(f, trie, of=sys.stdout, total=None, filte
                     #if "twitter.com/" not in url and "youtube.com" not in url:
                     #    print('WARNING: url unmatched on row #%s: %s' % (row, domain), file=sys.stderr)
                     continue
-                writer.writerow([tid, uname, uid, url, normalized, domain, webentity, dtime, is_rt, nbfols])
+                writer.writerow([tid, uname, uid, normalized, domain, webentity, dtime, is_rt, nbfols])
 
     except Exception as e:
         print('ERROR while processing row #%s (https://twitter.com/%s/statuses/%s)' % (row, uname, tid), file=sys.stderr)

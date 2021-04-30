@@ -7,6 +7,7 @@ users = defaultdict(lambda: defaultdict(int))
 keys = "Identitarian,Centre,Alternative Health & UFOs,Right Wing,Tabloids & Health Magazines,Hyper-centre,Leisure and Health,Alternative Health,Left Wing,Revolutionary Right,Regional Daily Press,PQR & Mag,IT & Consumer,Regional Daily Press (East)".split(",")
 keys = "Identitarian,Centre,Parallel Universes,Right Wing,Lifestyle magazines,Hyper-centre,Left Wing,Revolutionary Right,Local Press,IT & Consumer".split(",")
 keys = "Nationale-Révolutionnaire,Extrême-droite identitaires,Mondes alternatifs,Médias de droite,Centre,Presse locale et régionale,Magazines spécialisés,Médias de gauche,Hyper-centre".split(",")
+keys = "Left Wing,Hyper-centre,Right Wing,IT & Consumer,Lifestyle magazines,Identitarian,Parallel Universes,Local Press,Centre,Revolutionary Right,sensationnaliste,complot,écologie,autre,politique,santé,identitaire".split(",")
 
 filename = sys.argv[1]
 

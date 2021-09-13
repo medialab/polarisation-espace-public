@@ -1,6 +1,7 @@
 import csv
 import datetime
 from random import sample
+from dateutil import relativedelta
 
 followers_metadata_out = []
 followers_metadata_kept = []
@@ -59,7 +60,7 @@ for element in followers_metadata_kept:
     if element["follower_id"] in ids:
         random2000followers.append(element)
 
-with open("followers_metadata_kept.csv", "w") as csvfile:
+with open("2000_followers_graines.csv", "w") as csvfile:
     file_writer = csv.DictWriter(csvfile, fieldnames=headers)
     file_writer.writeheader()
     file_writer.writerows(random2000followers)

@@ -5,7 +5,7 @@ twitter_handle = set()
 followers_graines_out = []
 followers_graines_kept = []
 
-with open("graines_out.csv") as csvFile:
+with open("VF-Carte Raison - Corpus-final.csv") as csvFile:
     filereader = csv.DictReader(csvFile)
 
     for row in filereader:
@@ -16,9 +16,9 @@ with open("followers_graines.csv") as csvfile:
     headers = filereader.fieldnames
     for row in filereader:
         if row["twitter_handle"] in twitter_handle:
-            followers_graines_out.append(row)
-        else:
             followers_graines_kept.append(row)
+        else:
+            followers_graines_out.append(row)
 
 with open("followers_graines_kept.csv", "w") as csv_file:
     filewriter = csv.DictWriter(csv_file, fieldnames=headers)

@@ -1,7 +1,7 @@
 import csv
 import datetime
 from random import sample
-
+from dateutil import relativedelta
 
 followers_metadata_out = []
 followers_metadata_kept = []
@@ -13,22 +13,22 @@ follower_id = set()
 stime = "23/04/2021 19:15"
 collect_date = int(datetime.datetime.strptime(stime, "%d/%m/%Y %H:%M").replace(tzinfo=datetime.timezone.utc).timestamp())
 
-# Après avoir passé cette commande:
-# xsv select 4 followers_graines_out.csv -o follower_id_followers_graines_out.csv
-with open("follower_id_followers_graines_out.csv") as f:
-    filereader = csv.reader(f)
+with open("followers_graines_out.csv") as f:
+    filereader = csv.DictReader(f)
     for row in filereader:
-        follower_id.add(row[0])
+        follower_id.add(row["follower_id"])
 
 # to fix this error : _csv.Error: line contains NUL 
 # sed 's/\x0/ /g' followers_metadata.csv > fixed_followers_metadata.csv
 with open("fixed_followers_metadata.csv") as g:
+    count = 0
     filereader = csv.DictReader(g)
 
     headers = filereader.fieldnames
-
-    for row in filereader:
-        try:
+    try:
+        for row in filereader:
+            count +=1
+            
             if row["timestamp_utc"] != '':
                 debut_date = int(row["timestamp_utc"])
                 active_years_in_seconds = (collect_date - debut_date) 
@@ -38,9 +38,10 @@ with open("fixed_followers_metadata.csv") as g:
                     followers_metadata_out.append(row)
                 else:
                     followers_metadata_kept.append(row)
-        except Exception as e:
-            print(e)
-            print(row)
+    except Exception as e:
+        print(e)
+        print(row)
+        print(count)
 
 with open("followers_metadata_out.csv", "w") as h:
     filewriter = csv.DictWriter(h, fieldnames=headers)
@@ -52,15 +53,15 @@ for follower in followers_metadata_kept:
     id.add(follower["follower_id"])
 followers = list(id)
 
-last2000followers = []
-last2000followers_ids = sample(followers, 2000)
-ids = set(last2000followers_ids)
+random2000followers = []
+random2000followers_ids = sample(followers, 2000)
+ids = set(random2000followers_ids)
 for element in followers_metadata_kept:
     if element["follower_id"] in ids:
-        last2000followers.append(element)
+        random2000followers.append(element)
 
 with open("followers_metadata_kept.csv", "w") as csvfile:
     file_writer = csv.DictWriter(csvfile, fieldnames=headers)
     file_writer.writeheader()
-    file_writer.writerows(last2000followers)
+    file_writer.writerows(random2000followers)
 

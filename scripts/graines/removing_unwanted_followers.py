@@ -20,7 +20,7 @@ with open("followers_graines.csv") as csvfile:
         else:
             followers_graines_out.append(row)
 
-with open("followers_graines_kept.csv", "w") as csv_file:
+with open("followers_graines_version_2021_09_21.csv", "w") as csv_file:
     filewriter = csv.DictWriter(csv_file, fieldnames=headers)
 
     filewriter.writeheader()

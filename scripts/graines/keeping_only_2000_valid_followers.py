@@ -1,7 +1,7 @@
 import csv
 import datetime
 from random import sample
-from dateutil import relativedelta
+# from dateutil import relativedelta
 
 followers_metadata_out = []
 followers_metadata_kept = []

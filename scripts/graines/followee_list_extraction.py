@@ -12,7 +12,7 @@ with open("2000_followers_graines.csv") as h:
     for row, follower_id in filereader.cells('follower_id', with_rows=True):
         followers.add(follower_id)
 
-with open("followers_graines_kept.csv") as g:
+with open("followers_graines_version_2021_09_21.csv") as g:
     filereader = reader(g)
 
     twitter_handle_pos = filereader.headers['twitter_handle']
@@ -22,8 +22,8 @@ with open("followers_graines_kept.csv") as g:
             followee_list[follower_id].append(row[twitter_handle_pos])
 
 with open("2000_followers_graines.csv") as f, \
-    open("2000_followers_graines_followee_nb.csv", "w") as of:
-    file_enricher = enricher(f, of, add=['followee_count', 'followee_list'])
+    open("2000_followers_graines_version_2021_09_21.csv", "w") as of:
+    file_enricher = enricher(f, of, add=['count_graines_in_friends', 'graines_in_friends'])
 
     for row, follower_id in file_enricher.cells('follower_id', with_rows=True):
         nb = len(followee_list[follower_id])
@@ -33,7 +33,7 @@ with open("2000_followers_graines.csv") as f, \
 
 # Applied to all the followers
 
-# with open("followers_graines_kept.csv") as g:
+# with open("followers_graines_version_2021_09_21.csv") as g:
 #     filereader = reader(g)
 
 #     twitter_handle_pos = filereader.headers['twitter_handle']
@@ -42,8 +42,8 @@ with open("2000_followers_graines.csv") as f, \
 #         followee_list[follower_id].append(row[twitter_handle_pos])
         
 # with open("fixed_followers_metadata.csv") as f, \
-#     open("followers_metadata_followee_nb.csv", "w") as of:
-#     file_enricher = enricher(f, of, add=['followee_count', 'followee_list'])
+#     open("followers_metadata_version_2021_09_21.csv", "w") as of:
+#     file_enricher = enricher(f, of, add=['count_graines_in_friends', 'graines_in_friends'])
 
 #     for row, follower_id in file_enricher.cells('follower_id', with_rows=True):
 #         if follower_id in followee_list:

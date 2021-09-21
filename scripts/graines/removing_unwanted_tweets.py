@@ -2,7 +2,7 @@ import csv
 
 followers = set()
 
-with open("followers_metadata_kept.csv") as f:
+with open("2000_followers_graines.csv") as f:
     filereader_f = csv.DictReader(f)
 
     for row in filereader_f:

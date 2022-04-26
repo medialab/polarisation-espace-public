@@ -20,7 +20,7 @@ def roll(graphmlfile, nb_attempts, min_clusters, max_clusters, deg_corr=True):
     best_entropy = None
     for i in range(nb_attempts):
         s = time()
-        state = gt.minimize_nested_blockmodel_dl(g, deg_corr=deg_corr, B_min=min_clusters, B_max=max_clusters)
+        state = gt.minimize_nested_blockmodel_dl(g)#, deg_corr=deg_corr, B_min=min_clusters, B_max=max_clusters)
         entropy = state.entropy()
         print("Run #%s/%s in %ss" % (i+1, nb_attempts, int((time()-s)*100)/100) + " - model entropy: "  + str(entropy))
         if not best_entropy or entropy < best_entropy:

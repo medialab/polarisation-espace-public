@@ -28,14 +28,14 @@ def draw_from_state(statefile, img_width):
             text_rot[v] = math.atan(position[v][1]/position[v][0])
         else:
             text_rot[v] = math.pi + math.atan(position[v][1]/position[v][0])
-        if position[v][0]<0:
+        if position[v][0] < 0:
             text_rot[v] = text_rot[v]+math.pi
 
 
     state.draw(
         output=imgfile,
         vertex_text=state.g.vertex_properties['label'],
-        #vertex_font_size=8,
+        vertex_font_size=12,
         vertex_text_rotation=state.g.vertex_properties['text_rot'],
         vertex_size=1,
         vertex_text_position=1,

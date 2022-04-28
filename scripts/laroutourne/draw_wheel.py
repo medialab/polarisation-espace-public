@@ -28,8 +28,6 @@ def draw_from_state(statefile, img_width):
             text_rot[v] = math.atan(position[v][1]/position[v][0])
         else:
             text_rot[v] = math.pi + math.atan(position[v][1]/position[v][0])
-        if position[v][0] < 0:
-            text_rot[v] = text_rot[v]+math.pi
 
 
     state.draw(

@@ -12,7 +12,7 @@ from draw_wheel import draw_from_state
 # GraphTool doc https://graph-tool.skewed.de/static/doc/index.html
 
 
-def roll(graphmlfile, nb_attempts, min_clusters, max_clusters, deg_corr=True):
+def roll(graphmlfile, nb_attempts, min_clusters=None, max_clusters=None, deg_corr=True):
     g = gt.load_graph(graphmlfile)
 
     print("Graph loaded")
@@ -32,7 +32,7 @@ def roll(graphmlfile, nb_attempts, min_clusters, max_clusters, deg_corr=True):
     if max_clusters:
         max_clusters_str = "-%s_max_clusters" % max_clusters
 
-    statefile = graphmlfile.replace(".graphml", max_clusters_str+"-entropy_%s.state" % round(best_entropy))
+    statefile = graphmlfile.replace(".graphml", max_clusters_str+"-entropy_%s-%s.state" % (round(best_entropy), time()))
     with open(statefile, "wb") as f:
         pickle.dump(best, f)
 
@@ -71,12 +71,12 @@ def compute():
     parser = ArgumentParser(prog='laroutourne')
     parser.add_argument('graphmlfile', help='GraphML file to process', type=str)
     parser.add_argument('-n', '--nb-attempts', help='number of SBM runs to try', type=int, default=10)
-    parser.add_argument('-m', '--min-clusters', help='minimum number of clusters desired', type=int)
-    parser.add_argument('-M', '--max-clusters', help='maximum number of clusters desired', type=int)
+    #parser.add_argument('-m', '--min-clusters', help='minimum number of clusters desired', type=int)
+    #parser.add_argument('-M', '--max-clusters', help='maximum number of clusters desired', type=int)
     parser.add_argument('-w', '--img-width', help='dimensions of the image of the wheel to generate', type=int, default=3072)
     args = parser.parse_args()
 
-    statefile = roll(args.graphmlfile, args.nb_attempts, args.min_clusters, args.max_clusters)
+    statefile = roll(args.graphmlfile, args.nb_attempts)#, args.min_clusters, args.max_clusters)
     draw_from_state(statefile, args.img_width)
     write_blocks_csv(statefile)
 
